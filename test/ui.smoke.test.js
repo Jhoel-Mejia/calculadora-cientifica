@@ -40,7 +40,7 @@ function setup() {
   const els = {};
   ["expression", "result", "angle", "mem", "mod", "degBtn", "slotBtn", "pctBtn", "pctKey",
     "baseBtn", "langBtn", "basePanel", "baseList", "fracBtn", "copyBtn", "themeBtn",
-    "history", "historyList", "toast",
+    "history", "historyList", "toast", "histBtn", "varToggleBtn", "fracToggleBtn",
     "varPanel", "varList", "fracPanel", "fracInsertBtn", "fracWhole", "fracNum", "fracDen"]
     .forEach((id) => { els[id] = makeEl(id); });
   const meta = makeEl("meta");
@@ -263,4 +263,33 @@ test("aria-label de la tecla % se traduce (ES/EN)", () => {
   assert.strictEqual(els.pctKey.getAttribute("aria-label"), "Porcentaje");
   els.langBtn.click();
   assert.strictEqual(els.pctKey.getAttribute("aria-label"), "Percent");
+});
+
+test("aria-expanded refleja la apertura de paneles", () => {
+  const { els, clickKey } = setup();
+  clickKey("hist");
+  assert.strictEqual(els.histBtn.getAttribute("aria-expanded"), "true");
+  assert.strictEqual(els.history.classList.contains("open"), true);
+  clickKey("hist");
+  assert.strictEqual(els.histBtn.getAttribute("aria-expanded"), "false");
+  clickKey("vartoggle");
+  assert.strictEqual(els.varToggleBtn.getAttribute("aria-expanded"), "true");
+  clickKey("fractoggle");
+  assert.strictEqual(els.fracToggleBtn.getAttribute("aria-expanded"), "true");
+});
+
+test("aria-pressed alterna en %/mod y a/b", () => {
+  const { els } = setup();
+  assert.strictEqual(els.pctBtn.getAttribute("aria-pressed"), "false");
+  els.pctBtn.click();
+  assert.strictEqual(els.pctBtn.getAttribute("aria-pressed"), "true");
+  els.fracBtn.click();
+  assert.strictEqual(els.fracBtn.getAttribute("aria-pressed"), "true");
+});
+
+test("porcentaje contextual en la interfaz", () => {
+  const { els, press, type } = setup();
+  type("200+10%");
+  press("Enter");
+  assert.strictEqual(els.result.textContent, "220");
 });

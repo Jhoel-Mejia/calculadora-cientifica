@@ -21,6 +21,9 @@
   var basePanel = document.getElementById("basePanel");
   var baseList = document.getElementById("baseList");
   var langBtn = document.getElementById("langBtn");
+  var histBtn = document.getElementById("histBtn");
+  var varToggleBtn = document.getElementById("varToggleBtn");
+  var fracToggleBtn = document.getElementById("fracToggleBtn");
   var varPanel = document.getElementById("varPanel");
   var varList = document.getElementById("varList");
   var fracPanel = document.getElementById("fracPanel");
@@ -105,6 +108,7 @@
     modEl.classList.toggle("active", mod);
     pctBtn.textContent = mod ? "mod" : "%";
     pctBtn.classList.toggle("active", mod);
+    pctBtn.setAttribute("aria-pressed", mod ? "true" : "false");
     pctKey.textContent = mod ? "mod" : "%";
     pctKey.setAttribute("aria-label", mod ? t("pct.keyModulo") : t("pct.keyPercent"));
   }
@@ -252,15 +256,19 @@
 
   function toggleHistory() {
     historyEl.classList.toggle("open");
+    syncExpanded(histBtn, historyEl);
   }
 
   function hasVar(n) { return typeof state.vars[n] === "number" && isFinite(state.vars[n]); }
   function persistVars() { save("calc.vars", state.vars); }
   function setVar(n, value) { state.vars[n] = isFinite(value) ? value : 0; persistVars(); renderVars(); }
   function clearVars() { state.vars = {}; persistVars(); renderVars(); }
-  function toggleVars() { varPanel.classList.toggle("open"); }
-  function toggleFracPanel() { fracPanel.classList.toggle("open"); }
-  function toggleBase() { basePanel.classList.toggle("open"); }
+  function syncExpanded(btn, panel) {
+    if (btn && panel) btn.setAttribute("aria-expanded", panel.classList.contains("open") ? "true" : "false");
+  }
+  function toggleVars() { varPanel.classList.toggle("open"); syncExpanded(varToggleBtn, varPanel); }
+  function toggleFracPanel() { fracPanel.classList.toggle("open"); syncExpanded(fracToggleBtn, fracPanel); }
+  function toggleBase() { basePanel.classList.toggle("open"); syncExpanded(baseBtn, basePanel); }
 
   function baseLiteral(value, prefix, base) {
     var neg = value < 0;
@@ -453,6 +461,7 @@
     state.fracMode = !state.fracMode;
     save("calc.frac", state.fracMode);
     fracBtn.classList.toggle("active", state.fracMode);
+    fracBtn.setAttribute("aria-pressed", state.fracMode ? "true" : "false");
     render();
   }
 
@@ -578,6 +587,7 @@
   initTheme();
   updateIndicators();
   fracBtn.classList.toggle("active", state.fracMode);
+  fracBtn.setAttribute("aria-pressed", state.fracMode ? "true" : "false");
   applyI18n();
   render();
 

@@ -21,6 +21,8 @@
   --key-eq-ink: #04160d;
   --text: #eef1f4;
   --muted: #9aa4b2;
+  --accent: #f28b20;
+  --ind-ink: #48543f;
   --shadow: rgba(0, 0, 0, 0.35);
   --key-shadow: rgba(0, 0, 0, 0.35);
   --panel: rgba(0, 0, 0, 0.18);
@@ -49,7 +51,8 @@
   --key-eq-hi: #37b87d;
   --key-eq-ink: #04160d;
   --text: #23262c;
-  --muted: #6b7280;
+  --muted: #556069;
+  --accent: #9a4d00;
   --shadow: rgba(0, 0, 0, 0.18);
   --key-shadow: rgba(0, 0, 0, 0.22);
   --panel: rgba(0, 0, 0, 0.06);
@@ -116,7 +119,7 @@ body {
 .brand-model {
   font-size: 12px;
   font-weight: 700;
-  color: var(--key-op);
+  color: var(--accent);
 }
 
 .theme-btn {
@@ -145,7 +148,7 @@ body {
   cursor: pointer;
 }
 .mode-btn:hover { background: var(--panel-hi); }
-.mode-btn.active { color: var(--key-op); border-color: var(--key-op); }
+.mode-btn.active { color: var(--accent); border-color: var(--accent); }
 
 .screen {
   position: relative;
@@ -163,7 +166,7 @@ body {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1px;
-  color: #5a6b56;
+  color: var(--ind-ink);
   min-height: 14px;
 }
 
@@ -241,7 +244,7 @@ body {
 .history-clear {
   background: transparent;
   border: none;
-  color: var(--key-op);
+  color: var(--accent);
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
@@ -297,7 +300,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
 }
-.h-reuse:hover { color: var(--key-op); background: var(--panel-hi); }
+.h-reuse:hover { color: var(--accent); background: var(--panel-hi); }
 
 .var-item { align-items: center; }
 
@@ -307,7 +310,7 @@ body {
   height: 26px;
   font-size: 14px;
   font-weight: 700;
-  color: var(--key-op);
+  color: var(--accent);
   background: var(--panel-hi);
   border: none;
   border-radius: 6px;
@@ -435,8 +438,7 @@ body {
 .key.eq:hover { background: var(--key-eq-hi); }
 
 .key.fn.active {
-  outline: 2px solid var(--key-op);
-  color: var(--key-op);
+  outline: 2px solid var(--accent);
 }
 
 .toast {
@@ -456,6 +458,23 @@ body {
   z-index: 20;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.key:focus-visible { outline-offset: -2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+  .key:active { transform: none; }
+}
 
 @media (max-width: 350px) {
   .key { padding: 12px 0; font-size: 13px; }

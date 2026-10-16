@@ -22,6 +22,9 @@ HTML + CSS + JavaScript puro, sin dependencias ni build.
 - Bases: literales `0x` (hex), `0b` (bin), `0o` (oct). `toBase(n, base)`.
 - Notación científica `NeM` pegada a un número (`2e3` = 2000, `1e-7`); la `e`
   suelta sigue siendo la constante de Euler (`2e` = `2·e`).
+- `%` en modo porcentaje es **contextual**: en `a ± b%` vale `a·b/100`; en
+  `a × b%` / `a ÷ b%` es `b/100`. Se implementa con un marcador interno `{pct}`
+  que el parser resuelve según el operador circundante (`toNum`).
 
 ## i18n
 

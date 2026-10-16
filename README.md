@@ -17,8 +17,10 @@ Funciona 100% en el navegador (HTML, CSS y JavaScript puro).
   persistencia por ranura)
 - **Historial** de cálculos: clic para reutilizar el **resultado**, botón `↺` para
   reutilizar la **expresión** (persistente)
-- **`%` configurable**: como **porcentaje** (`x/100`) o como **módulo** (`a % b`),
-  con el botón de modo de la cabecera (indicador `MOD`)
+- **`%` configurable**: como **porcentaje contextual** (en `a ± b%` calcula el
+  porcentaje de `a`: `200+10% = 220`, `200-10% = 180`; en `a × b%` / `a ÷ b%` es
+  `a·b/100` / `a/(b/100)`) o como **módulo** (`a % b`), con el botón de modo de la
+  cabecera (indicador `MOD`)
 - **Copiar resultado** al portapapeles (botón *Copiar*)
 - **Fracciones** (salida): el botón `a/b` muestra el resultado como fracción
   simplificada cuando es exacta (`0.5 → 1/2`, `1.5 → 1 1/2`); si no, el decimal
@@ -67,6 +69,17 @@ python3 -m http.server 8080
 Los paréntesis sin cerrar se completan automáticamente al calcular
 (por ejemplo `(2+3` se evalúa como `(2+3)`). Los atajos se ignoran mientras
 escribes en los campos del panel `Frac`.
+
+## Accesibilidad
+
+- **Contraste WCAG AA**: los pares texto/fondo de ambos temas cumplen ≥ 4.5:1
+  (hay una prueba que lo verifica leyendo la paleta de `style.css`).
+- **Foco visible** en botones, teclas, enlaces e inputs (`:focus-visible`).
+- **Zoom permitido** en móvil y soporte de `prefers-reduced-motion`.
+- **Regiones y estados ARIA**: el resultado es una región `role="status"`;
+  los desplegables (`Hist`, `Var`, `Frac`, `Base`) exponen `aria-expanded`; los
+  conmutadores (`%`/`mod`, `a/b`) exponen `aria-pressed`; las teclas simbólicas
+  (`√`, `x²`, `xʸ`, `n!`, `±`, `∛`, …) tienen `aria-label` traducido.
 
 ## PWA (instalable y sin conexión)
 

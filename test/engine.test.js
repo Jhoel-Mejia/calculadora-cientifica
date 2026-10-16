@@ -62,6 +62,18 @@ test("significado de % : porcentaje vs modulo", () => {
   assert.throws(() => E.evaluate("100%", "DEG", "modulo"), "modulo sin operando derecho");
 });
 
+test("porcentaje contextual (a ± b%, a × b%, a ÷ b%)", () => {
+  assert.strictEqual(ev("200+10%"), "220");
+  assert.strictEqual(ev("200-10%"), "180");
+  assert.strictEqual(ev("200*10%"), "20");
+  assert.strictEqual(ev("200/10%"), "2000");
+  assert.strictEqual(ev("5+10%"), "5.5");
+  assert.strictEqual(ev("100-25%"), "75");
+  assert.strictEqual(ev("(200+10%)*2"), "440");
+  assert.strictEqual(ev("50%"), "0.5");
+  assert.strictEqual(ev("-10%"), "-0.1");
+});
+
 test("fracciones (exactas; null si no lo son)", () => {
   assert.strictEqual(E.formatFraction(0.5), "1/2");
   assert.strictEqual(E.formatFraction(1.5), "1 1/2");

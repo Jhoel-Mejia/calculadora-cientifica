@@ -116,6 +116,8 @@
     function peek() { return tokens[pos]; }
     function next() { return tokens[pos++]; }
     function isOp(v) { var t = peek(); return t && t.t === "op" && t.v === v; }
+    function isPct(v) { return v !== null && typeof v === "object" && typeof v.pct === "number"; }
+    function toNum(v) { return isPct(v) ? v.pct / 100 : v; }
     function startsValue() {
       var t = peek();
       if (!t) return false;
@@ -127,7 +129,13 @@
       while (peek() && peek().t === "op" && (peek().v === "+" || peek().v === "-")) {
         var op = next().v;
         var right = parseTerm();
-        left = op === "+" ? left + right : left - right;
+        if (isPct(right)) {
+          var base = toNum(left);
+          var delta = base * right.pct / 100;
+          left = op === "+" ? base + delta : base - delta;
+        } else {
+          left = op === "+" ? toNum(left) + toNum(right) : toNum(left) - toNum(right);
+        }
       }
       return left;
     }
@@ -140,11 +148,12 @@
         if (isMul) {
           var op = next().v;
           var right = parseUnary();
-          if (op === "*") left = left * right;
-          else if (op === "/") left = left / right;
-          else left = left % right;
+          var a = toNum(left), b = toNum(right);
+          if (op === "*") left = a * b;
+          else if (op === "/") left = a / b;
+          else left = a % b;
         } else if (startsValue()) {
-          left = left * parseUnary();
+          left = toNum(left) * toNum(parseUnary());
         } else break;
       }
       return left;
@@ -154,7 +163,8 @@
       if (peek() && peek().t === "op" && (peek().v === "-" || peek().v === "+")) {
         var op = next().v;
         var v = parseUnary();
-        return op === "-" ? -v : v;
+        if (op === "-") return isPct(v) ? { pct: -v.pct } : -v;
+        return v;
       }
       return parsePower();
     }
@@ -163,7 +173,7 @@
       var base = parsePostfix();
       if (isOp("^")) {
         next();
-        base = Math.pow(base, parseUnary());
+        base = Math.pow(toNum(base), toNum(parseUnary()));
       }
       return base;
     }
@@ -171,7 +181,8 @@
     function parsePostfix() {
       var v = parsePrimary();
       while (peek() && peek().t === "op" && (peek().v === "!" || (percentMode === "percent" && peek().v === "%"))) {
-        v = next().v === "!" ? factorial(v) : v / 100;
+        if (next().v === "!") v = factorial(toNum(v));
+        else v = { pct: toNum(v) };
       }
       return v;
     }
@@ -193,7 +204,7 @@
         var arg = parseExpr();
         if (!isOp(")")) throw new Error("Falta )");
         next();
-        return applyFunc(name, arg);
+        return applyFunc(name, toNum(arg));
       }
       if (t.t === "op" && t.v === "(") {
         next();
@@ -207,7 +218,7 @@
 
     var result = parseExpr();
     if (pos < tokens.length) throw new Error("Sintaxis");
-    return result;
+    return toNum(result);
   }
 
   function autoClose(expr) {

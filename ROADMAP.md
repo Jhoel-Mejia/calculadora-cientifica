@@ -66,8 +66,9 @@ Ordenadas por prioridad.
 
 ### Alta
 1. ✅ **`%` configurable**: botón `%`/`mod` en la cabecera alterna entre
-   porcentaje (`x/100`) y módulo (`a % b`); indicador `MOD`, persistente.
-   Pendiente: porcentaje contextual (`200+10%`) y `mod` como función.
+   porcentaje y módulo (`a % b`); indicador `MOD`, persistente. El porcentaje es
+   **contextual**: `200+10% = 220`, `200-10% = 180`, `200×10% = 20`,
+   `200÷10% = 2000`. Pendiente: `mod` como función (requiere argumentos con coma).
 2. ✅ **Autocierre de paréntesis** (B2, hecho).
 3. ✅ **Reutilizar la expresión desde el historial** (botón `↺` por entrada).
 4. ✅ **Copiar el resultado** al portapapeles (con aviso tipo *toast*).
@@ -85,7 +86,11 @@ Ordenadas por prioridad.
 8. ✅ **Conversión de bases**: entrada `0x`/`0b`/`0o` y panel `Base`
    (dec/hex/oct/bin); clic en una fila inserta el literal.
 9. ✅ **Pruebas automatizadas** con `node:test` en `npm test`
-   (`test/engine.test.js` + `test/ui.smoke.test.js`, 31 pruebas).
+   (`test/engine.test.js`, `test/ui.smoke.test.js` y `test/contrast.test.js`,
+   37 pruebas). La de contraste verifica WCAG AA leyendo `style.css`.
+9b. ✅ **Accesibilidad**: contraste AA, foco visible, zoom móvil,
+   `prefers-reduced-motion`, regiones/estados ARIA (`role=status`,
+   `aria-expanded`, `aria-pressed`, `aria-label` en teclas simbólicas).
 10. **Precisión configurable** (nº de decimales, notación científica forzada).
 11. **3 estados de tema**: claro / oscuro / automático (seguir sistema).
 

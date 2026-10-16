@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#2b2f36">
   <title data-i18n="app.title">Calculadora Científica</title>
   <link rel="manifest" href="manifest.json">
@@ -19,7 +19,7 @@
 
     <div class="toolbar">
       <button id="slotBtn" class="mode-btn" type="button" data-i18n-aria="slot.aria" data-i18n-title="slot.title" aria-label="Ranura de memoria activa" title="Memoria activa: toca para cambiar (M1–M9)">M1</button>
-      <button id="pctBtn" class="mode-btn" type="button" data-i18n-aria="pct.aria" data-i18n-title="pct.title" aria-label="Significado de %: porcentaje o módulo" title="Cambiar el significado de % (porcentaje / módulo)">%</button>
+      <button id="pctBtn" class="mode-btn" type="button" data-i18n-aria="pct.aria" data-i18n-title="pct.title" aria-pressed="false" aria-label="Significado de %: porcentaje o módulo" title="Cambiar el significado de % (porcentaje / módulo)">%</button>
       <button id="baseBtn" class="mode-btn" type="button" data-i18n-aria="base.aria" data-i18n-title="base.title" aria-label="Abrir conversión de bases" title="Conversión de bases (dec/hex/oct/bin)">Base</button>
       <button id="langBtn" class="mode-btn" type="button" data-i18n-aria="lang.aria" data-i18n-title="lang.title" aria-label="Cambiar idioma" title="Cambiar idioma (ES/EN)">ES</button>
       <button id="themeBtn" class="theme-btn" type="button" data-i18n-title="theme.title" data-i18n-aria="theme.aria" aria-label="Cambiar tema" title="Cambiar tema (claro/oscuro)">🌙</button>
@@ -31,12 +31,12 @@
         <span id="mem" class="ind">M1</span>
         <span id="mod" class="ind">MOD</span>
         <span class="screen-actions">
-          <button id="fracBtn" class="copy-btn" type="button" data-i18n-aria="fracToggle.aria" data-i18n-title="fracToggle.title" aria-label="Mostrar el resultado como fracción" title="Fracción / decimal">a/b</button>
+          <button id="fracBtn" class="copy-btn" type="button" data-i18n-aria="fracToggle.aria" data-i18n-title="fracToggle.title" aria-pressed="false" aria-label="Mostrar el resultado como fracción" title="Fracción / decimal">a/b</button>
           <button id="copyBtn" class="copy-btn" type="button" data-i18n="copy.label" data-i18n-aria="copy.aria" data-i18n-title="copy.aria" aria-label="Copiar resultado" title="Copiar resultado">Copiar</button>
         </span>
       </div>
-      <div id="expression" class="expr" aria-live="polite"></div>
-      <output id="result" class="result">0</output>
+      <div id="expression" class="expr"></div>
+      <output id="result" class="result" role="status" aria-live="polite" aria-atomic="true">0</output>
     </section>
 
     <section class="history" id="history" data-i18n-aria="history.title" aria-label="Historial de cálculos">
@@ -81,7 +81,7 @@
       <button class="key mem" data-action="mplus" type="button">M+</button>
       <button class="key mem" data-action="mminus" type="button">M−</button>
       <button class="key mem" data-action="ms" type="button">MS</button>
-      <button class="key mem" data-action="hist" type="button">Hist</button>
+      <button class="key mem" id="histBtn" data-action="hist" type="button" data-i18n-aria="key.hist" aria-expanded="false">Hist</button>
 
       <button class="key fn" data-action="angle" id="degBtn" type="button">DEG</button>
       <button class="key fn" data-insert="sin(" type="button">sin</button>
@@ -90,19 +90,19 @@
       <button class="key fn" data-insert="log(" type="button">log</button>
       <button class="key fn" data-insert="ln(" type="button">ln</button>
 
-      <button class="key fn" data-action="clear" type="button">C</button>
+      <button class="key fn" data-action="clear" type="button" data-i18n-aria="key.clear">C</button>
       <button class="key fn" data-insert="(" type="button">(</button>
       <button class="key fn" data-insert=")" type="button">)</button>
-      <button class="key fn" data-insert="π" type="button">π</button>
-      <button class="key fn" data-insert="e" type="button">e</button>
-      <button class="key fn" data-action="back" type="button">DEL</button>
+      <button class="key fn" data-insert="π" type="button" data-i18n-aria="key.pi">π</button>
+      <button class="key fn" data-insert="e" type="button" data-i18n-aria="key.euler">e</button>
+      <button class="key fn" data-action="back" type="button" data-i18n-aria="key.del">DEL</button>
 
-      <button class="key fn" data-insert="√(" type="button">√</button>
-      <button class="key fn" data-insert="^2" type="button">x²</button>
-      <button class="key fn" data-insert="^" type="button">xʸ</button>
-      <button class="key fn" data-insert="!" type="button">n!</button>
+      <button class="key fn" data-insert="√(" type="button" data-i18n-aria="key.sqrt">√</button>
+      <button class="key fn" data-insert="^2" type="button" data-i18n-aria="key.square">x²</button>
+      <button class="key fn" data-insert="^" type="button" data-i18n-aria="key.power">xʸ</button>
+      <button class="key fn" data-insert="!" type="button" data-i18n-aria="key.fact">n!</button>
       <button class="key fn" data-insert="%" id="pctKey" type="button" aria-label="Porcentaje o módulo">%</button>
-      <button class="key fn" data-insert="*10^(" type="button">EXP</button>
+      <button class="key fn" data-insert="*10^(" type="button" data-i18n-aria="key.exp">EXP</button>
 
       <button class="key num" data-insert="7" type="button">7</button>
       <button class="key num" data-insert="8" type="button">8</button>
@@ -115,8 +115,8 @@
       <button class="key num" data-insert="5" type="button">5</button>
       <button class="key num" data-insert="6" type="button">6</button>
       <button class="key op" data-insert="+" type="button">+</button>
-      <button class="key op" data-action="ans" type="button">Ans</button>
-      <button class="key op" data-action="sign" type="button">±</button>
+      <button class="key op" data-action="ans" type="button" data-i18n-aria="key.ans">Ans</button>
+      <button class="key op" data-action="sign" type="button" data-i18n-aria="key.sign">±</button>
 
       <button class="key num" data-insert="1" type="button">1</button>
       <button class="key num" data-insert="2" type="button">2</button>
@@ -125,12 +125,12 @@
       <button class="key num" data-insert="." type="button">.</button>
       <button class="key eq" data-action="equals" type="button">=</button>
 
-      <button class="key fn" data-action="vartoggle" type="button">Var</button>
-      <button class="key fn" data-action="fractoggle" type="button">Frac</button>
-      <button class="key fn" data-action="inv" type="button">1/x</button>
-      <button class="key fn" data-insert="abs(" type="button">|x|</button>
-      <button class="key fn" data-insert="^3" type="button">x³</button>
-      <button class="key fn" data-insert="cbrt(" type="button">∛</button>
+      <button class="key fn" id="varToggleBtn" data-action="vartoggle" type="button" data-i18n-aria="key.vars" aria-expanded="false">Var</button>
+      <button class="key fn" id="fracToggleBtn" data-action="fractoggle" type="button" data-i18n-aria="key.frac" aria-expanded="false">Frac</button>
+      <button class="key fn" data-action="inv" type="button" data-i18n-aria="key.inv">1/x</button>
+      <button class="key fn" data-insert="abs(" type="button" data-i18n-aria="key.abs">|x|</button>
+      <button class="key fn" data-insert="^3" type="button" data-i18n-aria="key.cube">x³</button>
+      <button class="key fn" data-insert="cbrt(" type="button" data-i18n-aria="key.cbrt">∛</button>
     </section>
   </main>
 
