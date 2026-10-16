@@ -10,9 +10,15 @@ Funciona 100% en el navegador (HTML, CSS y JavaScript puro).
   `n!`, `%`, `1/x` (vía `^`), `π`, `e`
 - Modo de ángulo **DEG / RAD** conmutable
 - Memoria de último resultado (`Ans`)
+- **Memoria M**: `MC`, `MR`, `M+`, `M−`, `MS` (con indicador y persistencia)
+- **Historial** de cálculos (clic para reutilizar el resultado)
+- **Temas claro/oscuro** (detecta el sistema; conmutable y persistente)
 - Evaluación segura mediante parser propio (sin `eval`)
 - Soporte de teclado físico en escritorio
 - Diseño adaptable a móvil
+- Estado persistente con `localStorage` (memoria, historial, tema, `Ans`)
+
+Ver `ROADMAP.md` para el plan de mejoras y correcciones pendientes.
 
 ## Uso
 

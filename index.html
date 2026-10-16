@@ -12,6 +12,7 @@
     <header class="brand">
       <span class="brand-name">SCIENTIFIC</span>
       <span class="brand-model">fx-241</span>
+      <button id="themeBtn" class="theme-btn" aria-label="Cambiar tema" title="Tema claro/oscuro">🌙</button>
     </header>
 
     <section class="screen">
@@ -23,48 +24,63 @@
       <output id="result" class="result">0</output>
     </section>
 
+    <section class="history" id="history" aria-label="Historial de cálculos">
+      <div class="history-head">
+        <span>Historial</span>
+        <button class="history-clear" data-action="histclear" type="button">Borrar</button>
+      </div>
+      <ul id="historyList" class="history-list"></ul>
+    </section>
+
     <section class="keys">
-      <button class="key fn" data-action="angle" id="degBtn">DEG</button>
-      <button class="key fn" data-insert="sin(">sin</button>
-      <button class="key fn" data-insert="cos(">cos</button>
-      <button class="key fn" data-insert="tan(">tan</button>
-      <button class="key fn" data-insert="log(">log</button>
-      <button class="key fn" data-insert="ln(">ln</button>
+      <button class="key mem" data-action="mc" type="button">MC</button>
+      <button class="key mem" data-action="mr" type="button">MR</button>
+      <button class="key mem" data-action="mplus" type="button">M+</button>
+      <button class="key mem" data-action="mminus" type="button">M−</button>
+      <button class="key mem" data-action="ms" type="button">MS</button>
+      <button class="key mem" data-action="hist" type="button">Hist</button>
 
-      <button class="key fn" data-action="clear">C</button>
-      <button class="key fn" data-insert="(">(</button>
-      <button class="key fn" data-insert=")">)</button>
-      <button class="key fn" data-insert="π">π</button>
-      <button class="key fn" data-insert="e">e</button>
-      <button class="key fn" data-action="back">DEL</button>
+      <button class="key fn" data-action="angle" id="degBtn" type="button">DEG</button>
+      <button class="key fn" data-insert="sin(" type="button">sin</button>
+      <button class="key fn" data-insert="cos(" type="button">cos</button>
+      <button class="key fn" data-insert="tan(" type="button">tan</button>
+      <button class="key fn" data-insert="log(" type="button">log</button>
+      <button class="key fn" data-insert="ln(" type="button">ln</button>
 
-      <button class="key fn" data-insert="√(">√</button>
-      <button class="key fn" data-insert="^2">x²</button>
-      <button class="key fn" data-insert="^">xʸ</button>
-      <button class="key fn" data-insert="!">n!</button>
-      <button class="key fn" data-insert="%">%</button>
-      <button class="key fn" data-insert="*10^(">EXP</button>
+      <button class="key fn" data-action="clear" type="button">C</button>
+      <button class="key fn" data-insert="(" type="button">(</button>
+      <button class="key fn" data-insert=")" type="button">)</button>
+      <button class="key fn" data-insert="π" type="button">π</button>
+      <button class="key fn" data-insert="e" type="button">e</button>
+      <button class="key fn" data-action="back" type="button">DEL</button>
 
-      <button class="key num" data-insert="7">7</button>
-      <button class="key num" data-insert="8">8</button>
-      <button class="key num" data-insert="9">9</button>
-      <button class="key op" data-insert="÷">÷</button>
-      <button class="key op" data-insert="×">×</button>
-      <button class="key op" data-insert="-">−</button>
+      <button class="key fn" data-insert="√(" type="button">√</button>
+      <button class="key fn" data-insert="^2" type="button">x²</button>
+      <button class="key fn" data-insert="^" type="button">xʸ</button>
+      <button class="key fn" data-insert="!" type="button">n!</button>
+      <button class="key fn" data-insert="%" type="button">%</button>
+      <button class="key fn" data-insert="*10^(" type="button">EXP</button>
 
-      <button class="key num" data-insert="4">4</button>
-      <button class="key num" data-insert="5">5</button>
-      <button class="key num" data-insert="6">6</button>
-      <button class="key op" data-insert="+">+</button>
-      <button class="key op" data-action="ans">Ans</button>
-      <button class="key op" data-action="sign">±</button>
+      <button class="key num" data-insert="7" type="button">7</button>
+      <button class="key num" data-insert="8" type="button">8</button>
+      <button class="key num" data-insert="9" type="button">9</button>
+      <button class="key op" data-insert="÷" type="button">÷</button>
+      <button class="key op" data-insert="×" type="button">×</button>
+      <button class="key op" data-insert="-" type="button">−</button>
 
-      <button class="key num" data-insert="1">1</button>
-      <button class="key num" data-insert="2">2</button>
-      <button class="key num" data-insert="3">3</button>
-      <button class="key num" data-insert="0">0</button>
-      <button class="key num" data-insert=".">.</button>
-      <button class="key eq" data-action="equals">=</button>
+      <button class="key num" data-insert="4" type="button">4</button>
+      <button class="key num" data-insert="5" type="button">5</button>
+      <button class="key num" data-insert="6" type="button">6</button>
+      <button class="key op" data-insert="+" type="button">+</button>
+      <button class="key op" data-action="ans" type="button">Ans</button>
+      <button class="key op" data-action="sign" type="button">±</button>
+
+      <button class="key num" data-insert="1" type="button">1</button>
+      <button class="key num" data-insert="2" type="button">2</button>
+      <button class="key num" data-insert="3" type="button">3</button>
+      <button class="key num" data-insert="0" type="button">0</button>
+      <button class="key num" data-insert="." type="button">.</button>
+      <button class="key eq" data-action="equals" type="button">=</button>
     </section>
   </main>
 
