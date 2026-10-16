@@ -1,0 +1,97 @@
+(function (root) {
+  "use strict";
+
+  var dict = {
+    es: {
+      "app.title": "Calculadora Científica",
+      "app.aria": "Calculadora científica",
+      "theme.title": "Cambiar tema (claro/oscuro)",
+      "slot.title": "Memoria activa: toca para cambiar (M1–M9)",
+      "slot.aria": "Ranura de memoria activa",
+      "pct.title": "Cambiar el significado de % (porcentaje / módulo)",
+      "pct.aria": "Significado de %: porcentaje o módulo",
+      "base.title": "Conversión de bases (dec/hex/oct/bin)",
+      "base.aria": "Abrir conversión de bases",
+      "lang.title": "Cambiar idioma (ES/EN)",
+      "lang.aria": "Cambiar idioma",
+      "copy.label": "Copiar",
+      "copy.aria": "Copiar resultado",
+      "fracToggle.title": "Mostrar el resultado como fracción",
+      "fracToggle.aria": "Mostrar el resultado como fracción",
+      "history.title": "Historial",
+      "history.clear": "Borrar",
+      "history.empty": "Sin cálculos aún",
+      "history.reuseTitle": "Reutilizar expresión",
+      "history.reuseAria": "Reutilizar expresión {e}",
+      "vars.title": "Variables",
+      "vars.clear": "Borrar",
+      "vars.insertTitle": "Insertar {n} en la expresión",
+      "vars.insertAria": "Insertar variable {n}",
+      "vars.stoTitle": "Guardar el valor actual en {n}",
+      "vars.rclTitle": "Insertar el valor de {n}",
+      "frac.title": "Fracción",
+      "frac.insert": "Insertar",
+      "frac.wholePh": "ent",
+      "frac.wholeAria": "Parte entera",
+      "frac.numPh": "num",
+      "frac.numAria": "Numerador",
+      "frac.denPh": "den",
+      "frac.denAria": "Denominador",
+      "base.panel": "Base",
+      "toast.copied": "Copiado: {v}",
+      "toast.copyfail": "No se pudo copiar",
+      "toast.empty": "{n} vacía",
+      "toast.fracInvalid": "Fracción no válida"
+    },
+    en: {
+      "app.title": "Scientific Calculator",
+      "app.aria": "Scientific calculator",
+      "theme.title": "Toggle theme (light/dark)",
+      "slot.title": "Active memory: tap to change (M1–M9)",
+      "slot.aria": "Active memory slot",
+      "pct.title": "Change the meaning of % (percent / modulo)",
+      "pct.aria": "Meaning of %: percent or modulo",
+      "base.title": "Base conversion (dec/hex/oct/bin)",
+      "base.aria": "Open base conversion",
+      "lang.title": "Change language (ES/EN)",
+      "lang.aria": "Change language",
+      "copy.label": "Copy",
+      "copy.aria": "Copy result",
+      "fracToggle.title": "Show the result as a fraction",
+      "fracToggle.aria": "Show the result as a fraction",
+      "history.title": "History",
+      "history.clear": "Clear",
+      "history.empty": "No calculations yet",
+      "history.reuseTitle": "Reuse expression",
+      "history.reuseAria": "Reuse expression {e}",
+      "vars.title": "Variables",
+      "vars.clear": "Clear",
+      "vars.insertTitle": "Insert {n} into the expression",
+      "vars.insertAria": "Insert variable {n}",
+      "vars.stoTitle": "Store the current value in {n}",
+      "vars.rclTitle": "Insert the value of {n}",
+      "frac.title": "Fraction",
+      "frac.insert": "Insert",
+      "frac.wholePh": "whole",
+      "frac.wholeAria": "Whole part",
+      "frac.numPh": "num",
+      "frac.numAria": "Numerator",
+      "frac.denPh": "den",
+      "frac.denAria": "Denominator",
+      "base.panel": "Base",
+      "toast.copied": "Copied: {v}",
+      "toast.copyfail": "Could not copy",
+      "toast.empty": "{n} is empty",
+      "toast.fracInvalid": "Invalid fraction"
+    }
+  };
+
+  root.I18N = {
+    dict: dict,
+    langs: ["es", "en"],
+    get: function (lang, key) {
+      var table = dict[lang] || dict.es;
+      return Object.prototype.hasOwnProperty.call(table, key) ? table[key] : (dict.es[key] || key);
+    }
+  };
+})(typeof self !== "undefined" ? self : this);

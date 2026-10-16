@@ -17,6 +17,10 @@
   var historyEl = document.getElementById("history");
   var historyList = document.getElementById("historyList");
   var toastEl = document.getElementById("toast");
+  var baseBtn = document.getElementById("baseBtn");
+  var basePanel = document.getElementById("basePanel");
+  var baseList = document.getElementById("baseList");
+  var langBtn = document.getElementById("langBtn");
   var varPanel = document.getElementById("varPanel");
   var varList = document.getElementById("varList");
   var fracPanel = document.getElementById("fracPanel");
@@ -47,11 +51,30 @@
     slot: (function () { var s = parseInt(load("calc.slot", 1), 10); return (s >= 1 && s <= 9) ? s : 1; })(),
     history: load("calc.history", []) || [],
     vars: load("calc.vars", null),
+    lang: load("calc.lang", null),
     percentMode: load("calc.percentMode", "percent") === "modulo" ? "modulo" : "percent",
     justEvaluated: false
   };
   if (!(state.ans === state.ans)) state.ans = 0;
   if (!state.vars || typeof state.vars !== "object") state.vars = {};
+  var I18N = window.I18N || { get: function (l, k) { return k; } };
+  var detectedLang = "es";
+  if (window.navigator && window.navigator.language) {
+    detectedLang = String(window.navigator.language).toLowerCase().indexOf("en") === 0 ? "en" : "es";
+  }
+  state.lang = (state.lang === "es" || state.lang === "en") ? state.lang : detectedLang;
+
+  function t(key, params) {
+    var s = I18N.get(state.lang, key);
+    if (params) {
+      for (var k in params) {
+        if (Object.prototype.hasOwnProperty.call(params, k)) {
+          s = s.split("{" + k + "}").join(params[k]);
+        }
+      }
+    }
+    return s;
+  }
   if (!state.mem || typeof state.mem !== "object") {
     state.mem = {};
     var oldMem = load("calc.memory", null);
@@ -69,6 +92,7 @@
   function render() {
     exprEl.textContent = state.expr;
     resEl.textContent = displayResult();
+    renderBase();
   }
 
   function updateIndicators() {
@@ -156,7 +180,7 @@
   function memSub() { setSlotMemory((memHas(state.slot) ? state.mem[state.slot] : 0) - currentValue()); }
   function memRecall() {
     if (memHas(state.slot)) insert(Engine.format(state.mem[state.slot]));
-    else showToast("M" + state.slot + " vacía");
+    else showToast(t("toast.empty", { n: "M" + state.slot }));
   }
   function memClear() { delete state.mem[state.slot]; persistMem(); updateIndicators(); }
   function cycleSlot() {
@@ -170,7 +194,7 @@
     if (state.history.length === 0) {
       var li = document.createElement("li");
       li.className = "history-empty";
-      li.textContent = "Sin cálculos aún";
+      li.textContent = t("history.empty");
       historyList.appendChild(li);
       return;
     }
@@ -187,8 +211,8 @@
       reuse.type = "button";
       reuse.className = "h-reuse";
       reuse.textContent = "\u21ba";
-      reuse.title = "Reutilizar expresión";
-      reuse.setAttribute("aria-label", "Reutilizar expresión " + item.e);
+      reuse.title = t("history.reuseTitle");
+      reuse.setAttribute("aria-label", t("history.reuseAria", { e: item.e }));
       reuse.addEventListener("click", function (ev) {
         ev.stopPropagation();
         insertExpr(item.e);
@@ -236,6 +260,41 @@
   function clearVars() { state.vars = {}; persistVars(); renderVars(); }
   function toggleVars() { varPanel.classList.toggle("open"); }
   function toggleFracPanel() { fracPanel.classList.toggle("open"); }
+  function toggleBase() { basePanel.classList.toggle("open"); }
+
+  function baseLiteral(value, prefix, base) {
+    var neg = value < 0;
+    var s = Engine.toBase(Math.abs(Math.floor(value)), base);
+    return (neg ? "-" : "") + prefix + s;
+  }
+
+  function renderBase() {
+    if (!baseList || !baseBtn) return;
+    baseList.innerHTML = "";
+    var finite = isFinite(state.value);
+    var rows = [
+      { label: "DEC", value: state.result, insert: state.result, ok: finite },
+      { label: "HEX", value: Engine.toBase(state.value, 16), insert: baseLiteral(state.value, "0x", 16), ok: finite },
+      { label: "OCT", value: Engine.toBase(state.value, 8), insert: baseLiteral(state.value, "0o", 8), ok: finite },
+      { label: "BIN", value: Engine.toBase(state.value, 2), insert: baseLiteral(state.value, "0b", 2), ok: finite }
+    ];
+    rows.forEach(function (row) {
+      var li = document.createElement("li");
+      li.className = "history-item";
+      var l = document.createElement("span");
+      l.className = "b-label";
+      l.textContent = row.label;
+      var v = document.createElement("span");
+      v.className = "b-val";
+      v.textContent = row.value;
+      li.appendChild(l);
+      li.appendChild(v);
+      li.tabIndex = 0;
+      li.setAttribute("role", "button");
+      li.addEventListener("click", function () { if (row.ok) insert(row.insert); });
+      baseList.appendChild(li);
+    });
+  }
 
   function renderVars() {
     if (!varList) return;
@@ -248,8 +307,8 @@
       nm.type = "button";
       nm.className = "v-name";
       nm.textContent = name;
-      nm.title = "Insertar " + name + " en la expresión";
-      nm.setAttribute("aria-label", "Insertar variable " + name);
+      nm.title = t("vars.insertTitle", { n: name });
+      nm.setAttribute("aria-label", t("vars.insertAria", { n: name }));
       nm.addEventListener("click", function () { insert(name); });
 
       var val = document.createElement("span");
@@ -260,17 +319,17 @@
       sto.type = "button";
       sto.className = "v-btn";
       sto.textContent = "STO";
-      sto.title = "Guardar el valor actual en " + name;
+      sto.title = t("vars.stoTitle", { n: name });
       sto.addEventListener("click", function () { setVar(name, currentValue()); });
 
       var rcl = document.createElement("button");
       rcl.type = "button";
       rcl.className = "v-btn";
       rcl.textContent = "RCL";
-      rcl.title = "Insertar el valor de " + name;
+      rcl.title = t("vars.rclTitle", { n: name });
       rcl.addEventListener("click", function () {
         if (hasVar(name)) insert(Engine.format(state.vars[name]));
-        else showToast(name + " vacía");
+        else showToast(t("toast.empty", { n: name }));
       });
 
       li.appendChild(nm);
@@ -281,9 +340,44 @@
     });
   }
 
+  function applyI18n() {
+    document.documentElement.lang = state.lang;
+    var titleEl = document.querySelector("title");
+    if (titleEl) titleEl.textContent = t("app.title");
+    var i, nodes, sel;
+    var groups = [
+      ["[data-i18n]", "textContent"],
+      ["[data-i18n-title]", "title"],
+      ["[data-i18n-ph]", "placeholder"]
+    ];
+    for (var g = 0; g < groups.length; g++) {
+      sel = groups[g][0];
+      if (!document.querySelectorAll) continue;
+      nodes = document.querySelectorAll(sel);
+      for (i = 0; i < nodes.length; i++) {
+        nodes[i][groups[g][1]] = t(nodes[i].getAttribute(sel.slice(1, -1)));
+      }
+    }
+    if (document.querySelectorAll) {
+      nodes = document.querySelectorAll("[data-i18n-aria]");
+      for (i = 0; i < nodes.length; i++) {
+        nodes[i].setAttribute("aria-label", t(nodes[i].getAttribute("data-i18n-aria")));
+      }
+    }
+    if (langBtn) langBtn.textContent = state.lang.toUpperCase();
+    renderHistory();
+    renderVars();
+  }
+
+  function switchLang() {
+    state.lang = state.lang === "es" ? "en" : "es";
+    save("calc.lang", state.lang);
+    applyI18n();
+  }
+
   function insertFraction() {
     var expr = Engine.fractionToExpr(fracWhole.value, fracNum.value, fracDen.value);
-    if (!expr) { showToast("Fracción no válida"); return; }
+    if (!expr) { showToast(t("toast.fracInvalid")); return; }
     insertExpr(expr);
     fracWhole.value = "";
     fracNum.value = "";
@@ -387,7 +481,7 @@
 
   function copyResult() {
     var text = state.result;
-    function done(ok) { showToast(ok ? "Copiado: " + text : "No se pudo copiar"); }
+    function done(ok) { showToast(ok ? t("toast.copied", { v: text }) : t("toast.copyfail")); }
     if (window.navigator && window.navigator.clipboard && window.navigator.clipboard.writeText) {
       window.navigator.clipboard.writeText(text).then(
         function () { done(true); },
@@ -424,6 +518,8 @@
   themeBtn.addEventListener("click", toggleTheme);
   slotBtn.addEventListener("click", cycleSlot);
   pctBtn.addEventListener("click", togglePercentMode);
+  baseBtn.addEventListener("click", toggleBase);
+  langBtn.addEventListener("click", switchLang);
   fracBtn.addEventListener("click", toggleFrac);
   copyBtn.addEventListener("click", copyResult);
 
@@ -459,8 +555,7 @@
   initTheme();
   updateIndicators();
   fracBtn.classList.toggle("active", state.fracMode);
-  renderHistory();
-  renderVars();
+  applyI18n();
   render();
 
   if (window.navigator && "serviceWorker" in window.navigator) {

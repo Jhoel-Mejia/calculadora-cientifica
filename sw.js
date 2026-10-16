@@ -1,10 +1,11 @@
 "use strict";
 
-var CACHE = "fx241-v2";
+var CACHE = "fx241-v3";
 var ASSETS = [
   "./",
   "./index.html",
   "./style.css",
+  "./i18n.js",
   "./engine.js",
   "./script.js",
   "./manifest.json",

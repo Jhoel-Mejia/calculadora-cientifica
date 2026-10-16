@@ -4,63 +4,75 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#2b2f36">
-  <title>Calculadora Científica</title>
+  <title data-i18n="app.title">Calculadora Científica</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="calc" role="application" aria-label="Calculadora científica">
+  <main class="calc" role="application" data-i18n-aria="app.aria" aria-label="Calculadora científica">
     <header class="brand">
       <span class="brand-name">SCIENTIFIC</span>
       <span class="brand-model">fx-241</span>
-      <button id="slotBtn" class="mode-btn" type="button" aria-label="Ranura de memoria activa" title="Memoria activa: toca para cambiar (M1–M9)">M1</button>
-      <button id="pctBtn" class="mode-btn" type="button" aria-label="Significado de %: porcentaje o módulo" title="Cambiar el significado de % (porcentaje / módulo)">%</button>
-      <button id="themeBtn" class="theme-btn" aria-label="Cambiar tema" title="Tema claro/oscuro">🌙</button>
     </header>
+
+    <div class="toolbar">
+      <button id="slotBtn" class="mode-btn" type="button" data-i18n-aria="slot.aria" data-i18n-title="slot.title" aria-label="Ranura de memoria activa" title="Memoria activa: toca para cambiar (M1–M9)">M1</button>
+      <button id="pctBtn" class="mode-btn" type="button" data-i18n-aria="pct.aria" data-i18n-title="pct.title" aria-label="Significado de %: porcentaje o módulo" title="Cambiar el significado de % (porcentaje / módulo)">%</button>
+      <button id="baseBtn" class="mode-btn" type="button" data-i18n-aria="base.aria" data-i18n-title="base.title" aria-label="Abrir conversión de bases" title="Conversión de bases (dec/hex/oct/bin)">Base</button>
+      <button id="langBtn" class="mode-btn" type="button" data-i18n-aria="lang.aria" data-i18n-title="lang.title" aria-label="Cambiar idioma" title="Cambiar idioma (ES/EN)">ES</button>
+      <button id="themeBtn" class="theme-btn" type="button" data-i18n-title="theme.title" aria-label="Cambiar tema" title="Cambiar tema (claro/oscuro)">🌙</button>
+    </div>
 
     <section class="screen">
       <div class="indicators">
         <span id="angle" class="ind active">DEG</span>
-        <span id="mem" class="ind">M</span>
+        <span id="mem" class="ind">M1</span>
         <span id="mod" class="ind">MOD</span>
         <span class="screen-actions">
-          <button id="fracBtn" class="copy-btn" type="button" aria-label="Mostrar el resultado como fracción" title="Fracción / decimal">a/b</button>
-          <button id="copyBtn" class="copy-btn" type="button" aria-label="Copiar resultado" title="Copiar resultado">Copiar</button>
+          <button id="fracBtn" class="copy-btn" type="button" data-i18n-aria="fracToggle.aria" data-i18n-title="fracToggle.title" aria-label="Mostrar el resultado como fracción" title="Fracción / decimal">a/b</button>
+          <button id="copyBtn" class="copy-btn" type="button" data-i18n="copy.label" data-i18n-aria="copy.aria" data-i18n-title="copy.aria" aria-label="Copiar resultado" title="Copiar resultado">Copiar</button>
         </span>
       </div>
       <div id="expression" class="expr" aria-live="polite"></div>
       <output id="result" class="result">0</output>
     </section>
 
-    <section class="history" id="history" aria-label="Historial de cálculos">
+    <section class="history" id="history" data-i18n-aria="history.title" aria-label="Historial de cálculos">
       <div class="history-head">
-        <span>Historial</span>
-        <button class="history-clear" data-action="histclear" type="button">Borrar</button>
+        <span data-i18n="history.title">Historial</span>
+        <button class="history-clear" data-action="histclear" type="button" data-i18n="history.clear">Borrar</button>
       </div>
       <ul id="historyList" class="history-list"></ul>
     </section>
 
-    <section class="history" id="varPanel" aria-label="Variables A a F">
+    <section class="history" id="varPanel" data-i18n-aria="vars.title" aria-label="Variables A a F">
       <div class="history-head">
-        <span>Variables</span>
-        <button class="history-clear" data-action="varclear" type="button">Borrar</button>
+        <span data-i18n="vars.title">Variables</span>
+        <button class="history-clear" data-action="varclear" type="button" data-i18n="vars.clear">Borrar</button>
       </div>
       <ul id="varList" class="history-list"></ul>
     </section>
 
-    <section class="history" id="fracPanel" aria-label="Entrada de fracción">
+    <section class="history" id="fracPanel" data-i18n-aria="frac.title" aria-label="Entrada de fracción">
       <div class="history-head">
-        <span>Fracción</span>
-        <button class="history-clear" id="fracInsertBtn" type="button">Insertar</button>
+        <span data-i18n="frac.title">Fracción</span>
+        <button class="history-clear" id="fracInsertBtn" type="button" data-i18n="frac.insert">Insertar</button>
       </div>
       <div class="frac-fields">
-        <input id="fracWhole" type="number" inputmode="numeric" placeholder="ent" aria-label="Parte entera">
-        <input id="fracNum" type="number" inputmode="numeric" placeholder="num" aria-label="Numerador">
+        <input id="fracWhole" type="number" inputmode="numeric" data-i18n-ph="frac.wholePh" data-i18n-aria="frac.wholeAria" placeholder="ent" aria-label="Parte entera">
+        <input id="fracNum" type="number" inputmode="numeric" data-i18n-ph="frac.numPh" data-i18n-aria="frac.numAria" placeholder="num" aria-label="Numerador">
         <span class="frac-slash">/</span>
-        <input id="fracDen" type="number" inputmode="numeric" placeholder="den" aria-label="Denominador">
+        <input id="fracDen" type="number" inputmode="numeric" data-i18n-ph="frac.denPh" data-i18n-aria="frac.denAria" placeholder="den" aria-label="Denominador">
       </div>
+    </section>
+
+    <section class="history" id="basePanel" data-i18n-aria="base.panel" aria-label="Conversión de bases">
+      <div class="history-head">
+        <span data-i18n="base.panel">Base</span>
+      </div>
+      <ul id="baseList" class="history-list"></ul>
     </section>
 
     <section class="keys">
@@ -124,6 +136,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+  <script src="i18n.js"></script>
   <script src="engine.js"></script>
   <script src="script.js"></script>
 </body>

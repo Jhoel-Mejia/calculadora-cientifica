@@ -91,6 +91,41 @@ test("fractionToExpr construye la expresion de fraccion", () => {
   assert.strictEqual(ev(E.fractionToExpr(1, 3, 4), "DEG"), "1.75");
 });
 
+test("entrada en bases 0x/0b/0o y toBase", () => {
+  assert.strictEqual(ev("0x1F"), "31");
+  assert.strictEqual(ev("0b1010"), "10");
+  assert.strictEqual(ev("0o17"), "15");
+  assert.strictEqual(ev("0xFF+1"), "256");
+  assert.strictEqual(E.toBase(255, 16), "FF");
+  assert.strictEqual(E.toBase(10, 2), "1010");
+  assert.strictEqual(E.toBase(-255, 16), "-FF");
+  assert.strictEqual(E.toBase(8, 8), "10");
+  assert.throws(() => E.evaluate("0b2", "DEG"), "digito invalido");
+});
+
+test("i18n: diccionarios es/en con fallback", () => {
+  const I18N = require("../i18n.js").I18N;
+  assert.strictEqual(I18N.get("es", "copy.label"), "Copiar");
+  assert.strictEqual(I18N.get("en", "copy.label"), "Copy");
+  assert.strictEqual(I18N.get("fr", "copy.label"), "Copiar");
+});
+
+test("i18n: claves de index.html presentes en es y en", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  const I18N = require("../i18n.js").I18N;
+  const keys = new Set();
+  const re = /data-i18n(?:-title|-aria|-ph)?="([^"]+)"/g;
+  let m;
+  while ((m = re.exec(html))) keys.add(m[1]);
+  assert.ok(keys.size > 0, "sin claves i18n en index.html");
+  for (const k of keys) {
+    assert.notStrictEqual(I18N.get("es", k), k, "falta traduccion es: " + k);
+    assert.notStrictEqual(I18N.get("en", k), k, "falta traduccion en: " + k);
+  }
+});
+
 test("autoClose equilibra parentesis", () => {
   assert.strictEqual(E.autoClose("(2+3"), "(2+3)");
   assert.strictEqual(E.autoClose("sin(30"), "sin(30)");

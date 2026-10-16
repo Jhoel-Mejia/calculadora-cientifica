@@ -26,6 +26,9 @@ Funciona 100% en el navegador (HTML, CSS y JavaScript puro).
   una variable, `RCL` inserta su valor y tocar la letra la inserta en la
   expresión. (`A`–`F` en mayúscula son variables; `e` minúscula es el número de Euler.)
 - **Teclas extra**: `1/x`, `|x|`, `x³`, `∛`
+- **Bases numéricas**: entrada de literales `0x` (hex), `0b` (bin), `0o` (oct) y
+  panel `Base` con la conversión dec/hex/oct/bin (clic en una fila inserta el literal)
+- **Idiomas ES/EN**: botón en la barra; traduce textos, títulos, `aria-label` y avisos
 - **Temas claro/oscuro** (detecta el sistema; conmutable y persistente)
 - Evaluación segura mediante parser propio (sin `eval`)
 - Soporte de teclado físico en escritorio
@@ -80,6 +83,7 @@ La app es una PWA: se puede instalar y funciona **offline**.
 - `style.css` — apariencia tipo calculadora Casio
 - `engine.js` — motor de cálculo (tokenizador + parser recursivo)
 - `script.js` — lógica de la interfaz
+- `i18n.js` — diccionarios de idioma (es/en)
 - `manifest.json` / `sw.js` / `icon-*.png` — PWA
 - `tools/gen-icons.js` — genera los iconos PNG (`node tools/gen-icons.js`)
 - `test/` — pruebas (`node --test`)

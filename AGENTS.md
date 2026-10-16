@@ -19,6 +19,13 @@ HTML + CSS + JavaScript puro, sin dependencias ni build.
 
 - Variables: `A`–`F` en **mayúscula**; `e` (minúscula) es el número de Euler y
   `pi`/`π` la constante pi. `evaluate(src, angle, percentMode, vars)`.
+- Bases: literales `0x` (hex), `0b` (bin), `0o` (oct). `toBase(n, base)`.
+
+## i18n
+
+- Idiomas en `i18n.js` (`window.I18N.get(lang, key)`). El HTML usa atributos
+  `data-i18n`, `data-i18n-title`, `data-i18n-aria`, `data-i18n-ph`.
+- Toda clave nueva debe existir en **es y en**; hay una prueba que lo verifica.
 
 ## PWA
 

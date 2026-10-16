@@ -79,9 +79,10 @@ Ordenadas por prioridad.
    con verificación de exactitud) y **entrada** con panel `Frac`
    (entero + numerador/denominador). Pendiente: conversión inversa (decimal→fracción
    como acción separada) y simplificación del histórico.
-8. **Conversión de bases**: decimal ⇄ bin ⇄ oct ⇄ hex.
+8. ✅ **Conversión de bases**: entrada `0x`/`0b`/`0o` y panel `Base`
+   (dec/hex/oct/bin); clic en una fila inserta el literal.
 9. ✅ **Pruebas automatizadas** con `node:test` en `npm test`
-   (`test/engine.test.js` + `test/ui.smoke.test.js`, 19 pruebas).
+   (`test/engine.test.js` + `test/ui.smoke.test.js`, 24 pruebas).
 10. **Precisión configurable** (nº de decimales, notación científica forzada).
 11. **3 estados de tema**: claro / oscuro / automático (seguir sistema).
 
@@ -91,7 +92,8 @@ Ordenadas por prioridad.
 13. ◻ **Atajos de teclado para funciones**: `s` `c` `t` `l` `n` `r` `p` `e`
     añadidos; pendiente el resto y mostrarlos en la UI.
 14. **Separador de miles** y agrupación visual.
-15. **i18n** (es/en).
+15. ✅ **i18n** (es/en): botón en la barra; textos, títulos, `aria-label`,
+    placeholders y avisos vía `i18n.js` y atributos `data-i18n*`.
 16. **Exportar historial** (texto/JSON).
 17. **Tests de accesibilidad** y contraste AA.
 

@@ -17,6 +17,18 @@
     while (i < n) {
       var c = s[i];
       if (c === " ") { i++; continue; }
+      if (c === "0" && i + 1 < n && "xXbBoO".indexOf(s[i + 1]) !== -1) {
+        var pref = s[i + 1].toLowerCase();
+        var base = pref === "x" ? 16 : pref === "o" ? 8 : 2;
+        var d0 = i + 2;
+        var d1 = d0;
+        while (d1 < n && digitVal(s[d1]) < base) d1++;
+        var lit = s.slice(d0, d1);
+        if (lit === "") throw new Error("Numero invalido");
+        tokens.push({ t: "num", v: parseInt(lit, base) });
+        i = d1;
+        continue;
+      }
       if (isDigit(c) || c === ".") {
         var j = i;
         while (j < n && (isDigit(s[j]) || s[j] === ".")) j++;
@@ -45,6 +57,13 @@
       throw new Error("Caracter invalido");
     }
     return tokens;
+  }
+
+  function digitVal(c) {
+    if (c >= "0" && c <= "9") return c.charCodeAt(0) - 48;
+    var l = c.toLowerCase();
+    if (l >= "a" && l <= "f") return l.charCodeAt(0) - 87;
+    return 99;
   }
 
   function factorial(x) {
@@ -237,6 +256,14 @@
     return sign + num + "/" + f.d;
   }
 
+  function toBase(n, base) {
+    if (typeof n !== "number" || !isFinite(n)) return "\u2014";
+    var neg = n < 0;
+    var x = Math.floor(Math.abs(n));
+    var s = x.toString(base).toUpperCase();
+    return (neg ? "-" : "") + s;
+  }
+
   function fractionToExpr(whole, num, den) {
     whole = whole === "" || whole === null || whole === undefined ? 0 : Number(whole);
     num = Number(num);
@@ -257,6 +284,7 @@
     toFraction: toFraction,
     formatFraction: formatFraction,
     fractionToExpr: fractionToExpr,
+    toBase: toBase,
     VARS: VARS.slice()
   };
 });

@@ -39,7 +39,8 @@ function fakeEvent() {
 function setup() {
   const els = {};
   ["expression", "result", "angle", "mem", "mod", "degBtn", "slotBtn", "pctBtn", "pctKey",
-    "fracBtn", "copyBtn", "themeBtn", "history", "historyList", "toast",
+    "baseBtn", "langBtn", "basePanel", "baseList", "fracBtn", "copyBtn", "themeBtn",
+    "history", "historyList", "toast",
     "varPanel", "varList", "fracPanel", "fracInsertBtn", "fracWhole", "fracNum", "fracDen"]
     .forEach((id) => { els[id] = makeEl(id); });
   const meta = makeEl("meta");
@@ -67,6 +68,7 @@ function setup() {
     addEventListener(type, fn) { (docHandlers[type] = docHandlers[type] || []).push(fn); }
   };
 
+  window.I18N = require(path.join(__dirname, "..", "i18n.js")).I18N;
   window.CalcEngine = require(path.join(__dirname, "..", "engine.js"));
   const scriptPath = path.join(__dirname, "..", "script.js");
   delete require.cache[require.resolve(scriptPath)];
@@ -167,6 +169,24 @@ test("entrada de fraccion inserta la expresion", () => {
   els.fracInsertBtn.click();
   assert.strictEqual(els.expression.textContent, "(1+(3/4))");
   assert.strictEqual(els.result.textContent, "1.75");
+});
+
+test("panel de bases muestra dec/hex/oct/bin", () => {
+  const { els, press, type } = setup();
+  type("255");
+  press("Enter");
+  assert.strictEqual(els.baseList.children[1].children[1].textContent, "FF");
+  assert.strictEqual(els.baseList.children[2].children[1].textContent, "377");
+  assert.strictEqual(els.baseList.children[3].children[1].textContent, "11111111");
+});
+
+test("cambio de idioma ES/EN", () => {
+  const { els } = setup();
+  assert.strictEqual(global.document.documentElement.lang, "es");
+  assert.strictEqual(els.langBtn.textContent, "ES");
+  els.langBtn.click();
+  assert.strictEqual(global.document.documentElement.lang, "en");
+  assert.strictEqual(els.langBtn.textContent, "EN");
 });
 
 test("toggle de % cambia entre porcentaje y modulo", () => {
