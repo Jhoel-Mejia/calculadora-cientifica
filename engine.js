@@ -196,5 +196,44 @@
     return String(parseFloat(n.toPrecision(12)));
   }
 
-  return { evaluate: evaluate, format: format, tokenize: tokenize, autoClose: autoClose };
+  function toFraction(x, maxDen) {
+    maxDen = maxDen || 1000000;
+    if (typeof x !== "number" || !isFinite(x)) return null;
+    if (Math.floor(x) === x) return { n: x, d: 1 };
+    var sign = x < 0 ? -1 : 1;
+    var v = Math.abs(x);
+    var h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = v;
+    for (var i = 0; i < 40; i++) {
+      var a = Math.floor(b);
+      var h2 = a * h1 + h0; h0 = h1; h1 = h2;
+      var k2 = a * k1 + k0; k0 = k1; k1 = k2;
+      if (Math.abs(v - h1 / k1) < 1e-11) break;
+      b = 1 / (b - a);
+      if (k1 > maxDen) return null;
+    }
+    if (k1 > maxDen) return null;
+    return { n: sign * h1, d: k1 };
+  }
+
+  function formatFraction(x, maxDen) {
+    var f = toFraction(x, maxDen);
+    if (!f) return null;
+    if (format(f.n / f.d) !== format(x)) return null;
+    if (f.d === 1) return String(f.n);
+    var sign = f.n < 0 ? "-" : "";
+    var num = Math.abs(f.n);
+    if (num >= f.d) {
+      return sign + Math.floor(num / f.d) + " " + (num % f.d) + "/" + f.d;
+    }
+    return sign + num + "/" + f.d;
+  }
+
+  return {
+    evaluate: evaluate,
+    format: format,
+    tokenize: tokenize,
+    autoClose: autoClose,
+    toFraction: toFraction,
+    formatFraction: formatFraction
+  };
 });

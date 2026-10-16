@@ -62,6 +62,17 @@ test("significado de % : porcentaje vs modulo", () => {
   assert.throws(() => E.evaluate("100%", "DEG", "modulo"), "modulo sin operando derecho");
 });
 
+test("fracciones (exactas; null si no lo son)", () => {
+  assert.strictEqual(E.formatFraction(0.5), "1/2");
+  assert.strictEqual(E.formatFraction(1.5), "1 1/2");
+  assert.strictEqual(E.formatFraction(-0.75), "-3/4");
+  assert.strictEqual(E.formatFraction(1 / 3), "1/3");
+  assert.strictEqual(E.formatFraction(1 / 7), "1/7");
+  assert.strictEqual(E.formatFraction(7), "7");
+  assert.strictEqual(E.formatFraction(Math.PI), null);
+  assert.strictEqual(E.formatFraction(Math.SQRT2), null);
+});
+
 test("autoClose equilibra parentesis", () => {
   assert.strictEqual(E.autoClose("(2+3"), "(2+3)");
   assert.strictEqual(E.autoClose("sin(30"), "sin(30)");

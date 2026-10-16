@@ -34,7 +34,7 @@ function fakeEvent() {
 function setup() {
   const els = {};
   ["expression", "result", "angle", "mem", "mod", "degBtn", "slotBtn", "pctBtn", "pctKey",
-    "copyBtn", "themeBtn", "history", "historyList", "toast"].forEach((id) => { els[id] = makeEl(id); });
+    "fracBtn", "copyBtn", "themeBtn", "history", "historyList", "toast"].forEach((id) => { els[id] = makeEl(id); });
   const meta = makeEl("meta");
   const keys = makeEl("keys");
   const docHandlers = {};
@@ -93,6 +93,16 @@ test("teclado: calculo basico y autocierre de parentesis", () => {
   press("Enter");
   assert.strictEqual(els.expression.textContent, "(2+3)");
   assert.strictEqual(els.result.textContent, "5");
+});
+
+test("toggle a/b muestra el resultado como fraccion", () => {
+  const { els, press, type } = setup();
+  type("1/2");
+  press("Enter");
+  assert.strictEqual(els.result.textContent, "0.5");
+  els.fracBtn.click();
+  assert.strictEqual(els.fracBtn.classList.contains("active"), true);
+  assert.strictEqual(els.result.textContent, "1/2");
 });
 
 test("multi-memoria M1-M9 y cambio de ranura", () => {

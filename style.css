@@ -155,8 +155,13 @@ body {
 .ind { opacity: 0.3; }
 .ind.active { opacity: 1; }
 
-.copy-btn {
+.screen-actions {
+  display: flex;
+  gap: 6px;
   margin-left: auto;
+}
+
+.copy-btn {
   padding: 2px 8px;
   font-size: 10px;
   font-weight: 700;
@@ -170,6 +175,7 @@ body {
 }
 .copy-btn:hover { background: rgba(0, 0, 0, 0.16); }
 .copy-btn:active { transform: translateY(1px); }
+.copy-btn.active { box-shadow: inset 0 0 0 2px #3c5238; color: #24331f; }
 
 .expr {
   min-height: 20px;

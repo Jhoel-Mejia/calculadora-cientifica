@@ -22,7 +22,10 @@
         <span id="angle" class="ind active">DEG</span>
         <span id="mem" class="ind">M</span>
         <span id="mod" class="ind">MOD</span>
-        <button id="copyBtn" class="copy-btn" type="button" aria-label="Copiar resultado" title="Copiar resultado">Copiar</button>
+        <span class="screen-actions">
+          <button id="fracBtn" class="copy-btn" type="button" aria-label="Mostrar el resultado como fracción" title="Fracción / decimal">a/b</button>
+          <button id="copyBtn" class="copy-btn" type="button" aria-label="Copiar resultado" title="Copiar resultado">Copiar</button>
+        </span>
       </div>
       <div id="expression" class="expr" aria-live="polite"></div>
       <output id="result" class="result">0</output>

@@ -75,10 +75,12 @@ Ordenadas por prioridad.
    `STO`/`RCL`.
 6. **Más funciones**: `sinh`, `cosh`, `tanh`, `x^(1/y)`, `gcd`, `lcm`,
    `mod`, `⌊x⌋`, redondeos.
-7. **Fracciones y decimales**: entrada/salida en fracción, conversión.
+7. ◻ **Fracciones y decimales**: ✅ **salida** como fracción simplificada
+   (botón `a/b`, con verificación de exactitud para no inventar fracciones de
+   irracionales). Pendiente: entrada en fracción mixta y conversión inversa.
 8. **Conversión de bases**: decimal ⇄ bin ⇄ oct ⇄ hex.
 9. ✅ **Pruebas automatizadas** con `node:test` en `npm test`
-   (`test/engine.test.js` + `test/ui.smoke.test.js`, 12 pruebas).
+   (`test/engine.test.js` + `test/ui.smoke.test.js`, 14 pruebas).
 10. **Precisión configurable** (nº de decimales, notación científica forzada).
 11. **3 estados de tema**: claro / oscuro / automático (seguir sistema).
 

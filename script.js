@@ -11,6 +11,7 @@
   var slotBtn = document.getElementById("slotBtn");
   var pctBtn = document.getElementById("pctBtn");
   var pctKey = document.getElementById("pctKey");
+  var fracBtn = document.getElementById("fracBtn");
   var copyBtn = document.getElementById("copyBtn");
   var themeBtn = document.getElementById("themeBtn");
   var historyEl = document.getElementById("history");
@@ -30,6 +31,8 @@
   var state = {
     expr: "",
     result: "0",
+    value: 0,
+    fracMode: load("calc.frac", false) === true,
     ans: load("calc.ans", 0),
     angle: load("calc.angle", "DEG") === "RAD" ? "RAD" : "DEG",
     mem: load("calc.mem", null),
@@ -45,9 +48,17 @@
     if (oldMem !== null && isFinite(oldMem)) state.mem[1] = oldMem;
   }
 
+  function displayResult() {
+    if (state.fracMode && isFinite(state.value)) {
+      var f = Engine.formatFraction(state.value);
+      if (f) return f;
+    }
+    return state.result;
+  }
+
   function render() {
     exprEl.textContent = state.expr;
-    resEl.textContent = state.result;
+    resEl.textContent = displayResult();
   }
 
   function updateIndicators() {
@@ -67,8 +78,12 @@
   var autoClose = Engine.autoClose;
 
   function preview() {
-    if (state.expr.trim() === "") { state.result = "0"; return; }
-    try { state.result = Engine.format(Engine.evaluate(autoClose(state.expr), state.angle, state.percentMode)); } catch (e) { /* mantener */ }
+    if (state.expr.trim() === "") { state.result = "0"; state.value = 0; return; }
+    try {
+      var v = Engine.evaluate(autoClose(state.expr), state.angle, state.percentMode);
+      state.value = v;
+      state.result = Engine.format(v);
+    } catch (e) { /* mantener */ }
   }
 
   function insert(text) {
@@ -92,6 +107,7 @@
   function clearAll() {
     state.expr = "";
     state.result = "0";
+    state.value = 0;
     state.justEvaluated = false;
     render();
   }
@@ -210,6 +226,7 @@
     try {
       var v = Engine.evaluate(closed, state.angle, state.percentMode);
       state.expr = closed;
+      state.value = v;
       state.ans = v;
       state.result = Engine.format(v);
       save("calc.ans", state.ans);
@@ -248,6 +265,13 @@
     if (saved === "light" || saved === "dark") { applyTheme(saved); return; }
     var prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
     applyTheme(prefersLight ? "light" : "dark");
+  }
+
+  function toggleFrac() {
+    state.fracMode = !state.fracMode;
+    save("calc.frac", state.fracMode);
+    fracBtn.classList.toggle("active", state.fracMode);
+    render();
   }
 
   function togglePercentMode() {
@@ -318,6 +342,7 @@
   themeBtn.addEventListener("click", toggleTheme);
   slotBtn.addEventListener("click", cycleSlot);
   pctBtn.addEventListener("click", togglePercentMode);
+  fracBtn.addEventListener("click", toggleFrac);
   copyBtn.addEventListener("click", copyResult);
 
   historyEl.addEventListener("click", function (ev) {
@@ -345,6 +370,7 @@
 
   initTheme();
   updateIndicators();
+  fracBtn.classList.toggle("active", state.fracMode);
   renderHistory();
   render();
 })();
