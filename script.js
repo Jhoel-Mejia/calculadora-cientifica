@@ -373,4 +373,10 @@
   fracBtn.classList.toggle("active", state.fracMode);
   renderHistory();
   render();
+
+  if (window.navigator && "serviceWorker" in window.navigator) {
+    window.addEventListener("load", function () {
+      window.navigator.serviceWorker.register("sw.js").catch(function () { /* ignorar */ });
+    });
+  }
 })();

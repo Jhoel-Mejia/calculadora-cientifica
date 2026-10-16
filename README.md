@@ -56,12 +56,27 @@ python3 -m http.server 8080
 Los paréntesis sin cerrar se completan automáticamente al calcular
 (por ejemplo `(2+3` se evalúa como `(2+3)`).
 
+## PWA (instalable y sin conexión)
+
+La app es una PWA: se puede instalar y funciona **offline**.
+
+- `manifest.json` define la app; `sw.js` es el *service worker* que cachea el
+  shell (estrategia *stale-while-revalidate*).
+- En Android/Chrome: menú → **Instalar aplicación** / **Añadir a pantalla de
+  inicio**. Requiere servirse por **HTTPS** (GitHub Pages lo cumple). Abrir el
+  archivo directamente con `file://` **no** habilita la PWA ni el service worker.
+- Al cambiar los archivos, **sube la versión de `CACHE` en `sw.js`** (`fx241-v1`
+  → `fx241-v2`) para forzar la actualización del caché.
+
 ## Estructura
 
 - `index.html` — interfaz y teclado
 - `style.css` — apariencia tipo calculadora Casio
 - `engine.js` — motor de cálculo (tokenizador + parser recursivo)
 - `script.js` — lógica de la interfaz
+- `manifest.json` / `sw.js` / `icon-*.png` — PWA
+- `tools/gen-icons.js` — genera los iconos PNG (`node tools/gen-icons.js`)
+- `test/` — pruebas (`node --test`)
 
 ## Pruebas
 

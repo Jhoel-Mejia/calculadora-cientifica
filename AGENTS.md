@@ -11,8 +11,14 @@ HTML + CSS + JavaScript puro, sin dependencias ni build.
 
 - Servir en local: `python3 -m http.server 8080`
 - Pruebas: `node --test` (o `npm test`). Cubren motor y arranque de UI.
-- Verificar sintaxis: `node --check engine.js && node --check script.js`
+- Verificar sintaxis: `node --check engine.js && node --check script.js && node --check sw.js`
+- Regenerar iconos PWA: `node tools/gen-icons.js`
 - No hay lint configurado.
+
+## PWA
+
+- Al modificar `index.html`, `style.css`, `engine.js` o `script.js`, subir la
+  versión de `CACHE` en `sw.js` para invalidar el caché del service worker.
 
 ## Estructura
 

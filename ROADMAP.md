@@ -85,7 +85,8 @@ Ordenadas por prioridad.
 11. **3 estados de tema**: claro / oscuro / automático (seguir sistema).
 
 ### Baja
-12. **PWA**: instalable y funcional sin conexión (`manifest.json` + service worker).
+12. ✅ **PWA**: instalable y funcional sin conexión (`manifest.json` + `sw.js`
+    con *stale-while-revalidate* + iconos PNG generados con `tools/gen-icons.js`).
 13. ◻ **Atajos de teclado para funciones**: `s` `c` `t` `l` `n` `r` `p` `e`
     añadidos; pendiente el resto y mostrarlos en la UI.
 14. **Separador de miles** y agrupación visual.
