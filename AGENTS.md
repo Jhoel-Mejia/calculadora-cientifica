@@ -10,8 +10,9 @@ HTML + CSS + JavaScript puro, sin dependencias ni build.
 ## Comandos
 
 - Servir en local: `python3 -m http.server 8080`
-- Probar el motor: `node -e 'const E=require("./engine.js"); console.log(E.evaluate("2+3*4","DEG"))'`
-- No hay lint/test configurado.
+- Pruebas: `node --test` (o `npm test`). Cubren motor y arranque de UI.
+- Verificar sintaxis: `node --check engine.js && node --check script.js`
+- No hay lint configurado.
 
 ## Estructura
 

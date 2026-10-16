@@ -41,6 +41,12 @@ python3 -m http.server 8080
 | `= / Enter`  | Calcular          |
 | `Backspace`  | Borrar            |
 | `Esc`        | Limpiar           |
+| `s` `c` `t`  | `sin(` `cos(` `tan(` |
+| `l` `n`      | `log(` `ln(`      |
+| `r` `p` `e`  | `√(` `π` `e`      |
+
+Los paréntesis sin cerrar se completan automáticamente al calcular
+(por ejemplo `(2+3` se evalúa como `(2+3)`).
 
 ## Estructura
 
@@ -49,7 +55,18 @@ python3 -m http.server 8080
 - `engine.js` — motor de cálculo (tokenizador + parser recursivo)
 - `script.js` — lógica de la interfaz
 
-## Pruebas del motor
+## Pruebas
+
+Requiere Node.js (solo para pruebas; la app no necesita Node).
+
+```bash
+node --test        # o: npm test
+```
+
+Cubre el motor (`test/engine.test.js`) y el arranque de la interfaz con un DOM
+simulado (`test/ui.smoke.test.js`).
+
+Prueba rápida manual del motor:
 
 ```bash
 node -e 'const E=require("./engine.js"); console.log(E.evaluate("2+3*4","DEG"))'

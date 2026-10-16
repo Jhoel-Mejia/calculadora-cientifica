@@ -59,7 +59,11 @@
       switch (name) {
         case "sin": return Math.sin(toRad(x));
         case "cos": return Math.cos(toRad(x));
-        case "tan": return Math.tan(toRad(x));
+        case "tan": {
+          var t = Math.tan(toRad(x));
+          if (Math.abs(t) > 1e15) throw new Error("Indefinido");
+          return t;
+        }
         case "asin": return fromRad(Math.asin(x));
         case "acos": return fromRad(Math.acos(x));
         case "atan": return fromRad(Math.atan(x));
@@ -98,26 +102,17 @@
     }
 
     function parseTerm() {
-      var left = parseFactor();
+      var left = parseUnary();
       while (true) {
         if (peek() && peek().t === "op" && (peek().v === "*" || peek().v === "/")) {
           var op = next().v;
-          var right = parseFactor();
+          var right = parseUnary();
           left = op === "*" ? left * right : left / right;
         } else if (startsValue()) {
-          left = left * parseFactor();
+          left = left * parseUnary();
         } else break;
       }
       return left;
-    }
-
-    function parseFactor() {
-      var base = parseUnary();
-      if (isOp("^")) {
-        next();
-        base = Math.pow(base, parseFactor());
-      }
-      return base;
     }
 
     function parseUnary() {
@@ -126,7 +121,16 @@
         var v = parseUnary();
         return op === "-" ? -v : v;
       }
-      return parsePostfix();
+      return parsePower();
+    }
+
+    function parsePower() {
+      var base = parsePostfix();
+      if (isOp("^")) {
+        next();
+        base = Math.pow(base, parseUnary());
+      }
+      return base;
     }
 
     function parsePostfix() {
@@ -166,6 +170,17 @@
     return result;
   }
 
+  function autoClose(expr) {
+    var open = 0;
+    for (var i = 0; i < expr.length; i++) {
+      if (expr[i] === "(") open++;
+      else if (expr[i] === ")") open = Math.max(0, open - 1);
+    }
+    var s = expr;
+    while (open-- > 0) s += ")";
+    return s;
+  }
+
   function format(n) {
     if (typeof n !== "number" || !isFinite(n)) throw new Error("No finito");
     if (n === 0) return "0";
@@ -176,5 +191,5 @@
     return String(parseFloat(n.toPrecision(12)));
   }
 
-  return { evaluate: evaluate, format: format, tokenize: tokenize };
+  return { evaluate: evaluate, format: format, tokenize: tokenize, autoClose: autoClose };
 });

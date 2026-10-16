@@ -1,0 +1,10 @@
+{
+  "name": "calculadora-cientifica",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Calculadora científica web tipo Casio, sin dependencias ni build.",
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}

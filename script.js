@@ -44,9 +44,11 @@
     memEl.classList.toggle("active", state.memory !== 0);
   }
 
+  var autoClose = Engine.autoClose;
+
   function preview() {
     if (state.expr.trim() === "") { state.result = "0"; return; }
-    try { state.result = Engine.format(Engine.evaluate(state.expr, state.angle)); } catch (e) { /* mantener */ }
+    try { state.result = Engine.format(Engine.evaluate(autoClose(state.expr), state.angle)); } catch (e) { /* mantener */ }
   }
 
   function insert(text) {
@@ -121,7 +123,17 @@
       r.textContent = "= " + item.r;
       li.appendChild(e);
       li.appendChild(r);
+      li.tabIndex = 0;
+      li.setAttribute("role", "button");
+      li.setAttribute("aria-label", item.e + " = " + item.r);
       li.addEventListener("click", function () { insert(item.r); });
+      li.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " " || ev.key === "Spacebar") {
+          insert(item.r);
+          ev.preventDefault();
+          ev.stopPropagation();
+        }
+      });
       historyList.appendChild(li);
     });
   }
@@ -145,12 +157,14 @@
 
   function equals() {
     if (state.expr.trim() === "") return;
+    var closed = autoClose(state.expr);
     try {
-      var v = Engine.evaluate(state.expr, state.angle);
+      var v = Engine.evaluate(closed, state.angle);
+      state.expr = closed;
       state.ans = v;
       state.result = Engine.format(v);
       save("calc.ans", state.ans);
-      addHistory(state.expr, state.result);
+      addHistory(closed, state.result);
     } catch (e) {
       state.result = "Error";
     }
@@ -222,6 +236,14 @@
     else if (key === "Enter" || key === "=") { equals(); ev.preventDefault(); }
     else if (key === "Backspace") { backspace(); ev.preventDefault(); }
     else if (key === "Escape") { clearAll(); ev.preventDefault(); }
+    else if (key === "s") { insert("sin("); ev.preventDefault(); }
+    else if (key === "c") { insert("cos("); ev.preventDefault(); }
+    else if (key === "t") { insert("tan("); ev.preventDefault(); }
+    else if (key === "l") { insert("log("); ev.preventDefault(); }
+    else if (key === "n") { insert("ln("); ev.preventDefault(); }
+    else if (key === "r") { insert("\u221a("); ev.preventDefault(); }
+    else if (key === "p") { insert("\u03c0"); ev.preventDefault(); }
+    else if (key === "e") { insert("e"); ev.preventDefault(); }
   });
 
   initTheme();
