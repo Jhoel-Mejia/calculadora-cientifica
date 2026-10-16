@@ -1,26 +1,27 @@
 # AGENTS.md
 
-Instrucciones específicas de este proyecto para OpenCode.
-Rellena las secciones según el proyecto. Este archivo sí se sube a Git.
+Instrucciones del proyecto para OpenCode.
 
 ## Proyecto
 
-Describe el propósito, el stack y la arquitectura en 2-3 líneas.
+Calculadora científica web (tipo Casio fx-241). Sitio estático:
+HTML + CSS + JavaScript puro, sin dependencias ni build.
 
 ## Comandos
 
-- Instalar dependencias:
-- Ejecutar en desarrollo:
-- Ejecutar tests:
-- Lint / formato:
+- Servir en local: `python3 -m http.server 8080`
+- Probar el motor: `node -e 'const E=require("./engine.js"); console.log(E.evaluate("2+3*4","DEG"))'`
+- No hay lint/test configurado.
 
 ## Estructura
 
-- `src/` —
-- `tests/` —
+- `index.html` — interfaz y botones
+- `style.css` — estilos
+- `engine.js` — motor de cálculo (parser). Funciones puras, testeable en Node.
+- `script.js` — lógica de la interfaz (DOM)
 
 ## Convenciones
 
-- Estilo de código:
-- Mensajes de commit:
-- Ramas:
+- No introducir dependencias ni frameworks.
+- Mantener `engine.js` libre de acceso al DOM (funciones puras).
+- No usar `eval`; toda evaluación pasa por el parser de `engine.js`.

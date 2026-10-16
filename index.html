@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2b2f36">
+  <title>Calculadora Científica</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="calc" role="application" aria-label="Calculadora científica">
+    <header class="brand">
+      <span class="brand-name">SCIENTIFIC</span>
+      <span class="brand-model">fx-241</span>
+    </header>
+
+    <section class="screen">
+      <div class="indicators">
+        <span id="angle" class="ind active">DEG</span>
+        <span id="mem" class="ind">M</span>
+      </div>
+      <div id="expression" class="expr" aria-live="polite"></div>
+      <output id="result" class="result">0</output>
+    </section>
+
+    <section class="keys">
+      <button class="key fn" data-action="angle" id="degBtn">DEG</button>
+      <button class="key fn" data-insert="sin(">sin</button>
+      <button class="key fn" data-insert="cos(">cos</button>
+      <button class="key fn" data-insert="tan(">tan</button>
+      <button class="key fn" data-insert="log(">log</button>
+      <button class="key fn" data-insert="ln(">ln</button>
+
+      <button class="key fn" data-action="clear">C</button>
+      <button class="key fn" data-insert="(">(</button>
+      <button class="key fn" data-insert=")">)</button>
+      <button class="key fn" data-insert="π">π</button>
+      <button class="key fn" data-insert="e">e</button>
+      <button class="key fn" data-action="back">DEL</button>
+
+      <button class="key fn" data-insert="√(">√</button>
+      <button class="key fn" data-insert="^2">x²</button>
+      <button class="key fn" data-insert="^">xʸ</button>
+      <button class="key fn" data-insert="!">n!</button>
+      <button class="key fn" data-insert="%">%</button>
+      <button class="key fn" data-insert="*10^(">EXP</button>
+
+      <button class="key num" data-insert="7">7</button>
+      <button class="key num" data-insert="8">8</button>
+      <button class="key num" data-insert="9">9</button>
+      <button class="key op" data-insert="÷">÷</button>
+      <button class="key op" data-insert="×">×</button>
+      <button class="key op" data-insert="-">−</button>
+
+      <button class="key num" data-insert="4">4</button>
+      <button class="key num" data-insert="5">5</button>
+      <button class="key num" data-insert="6">6</button>
+      <button class="key op" data-insert="+">+</button>
+      <button class="key op" data-action="ans">Ans</button>
+      <button class="key op" data-action="sign">±</button>
+
+      <button class="key num" data-insert="1">1</button>
+      <button class="key num" data-insert="2">2</button>
+      <button class="key num" data-insert="3">3</button>
+      <button class="key num" data-insert="0">0</button>
+      <button class="key num" data-insert=".">.</button>
+      <button class="key eq" data-action="equals">=</button>
+    </section>
+  </main>
+
+  <script src="engine.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
