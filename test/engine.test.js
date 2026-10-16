@@ -54,6 +54,14 @@ test("errores", () => {
   assert.throws(() => ev("()"), "vacio dentro de parentesis");
 });
 
+test("significado de % : porcentaje vs modulo", () => {
+  assert.strictEqual(E.format(E.evaluate("10%3", "DEG", "percent")), "0.3");
+  assert.strictEqual(E.format(E.evaluate("10%3", "DEG", "modulo")), "1");
+  assert.strictEqual(E.format(E.evaluate("7%4", "DEG", "modulo")), "3");
+  assert.strictEqual(E.format(E.evaluate("50%", "DEG", "percent")), "0.5");
+  assert.throws(() => E.evaluate("100%", "DEG", "modulo"), "modulo sin operando derecho");
+});
+
 test("autoClose equilibra parentesis", () => {
   assert.strictEqual(E.autoClose("(2+3"), "(2+3)");
   assert.strictEqual(E.autoClose("sin(30"), "sin(30)");

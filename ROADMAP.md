@@ -62,12 +62,12 @@ Para exponentes usa el botón **EXP** (`×10^(`).
 Ordenadas por prioridad.
 
 ### Alta
-1. **`%` configurable**: hoy `%` = "por ciento" (`x/100`). Añadir opción de
-   `%` como **módulo** (`a mod b`) o porcentaje contextual (`200+10%`).
-   - Criterio: botón o ajuste que cambie el comportamiento y se documente.
+1. ✅ **`%` configurable**: botón `%`/`mod` en la cabecera alterna entre
+   porcentaje (`x/100`) y módulo (`a % b`); indicador `MOD`, persistente.
+   Pendiente: porcentaje contextual (`200+10%`) y `mod` como función.
 2. ✅ **Autocierre de paréntesis** (B2, hecho).
-3. **Reutilizar la expresión desde el historial** (además del resultado).
-4. **Copiar el resultado** al portapapeles con un toque.
+3. ✅ **Reutilizar la expresión desde el historial** (botón `↺` por entrada).
+4. ✅ **Copiar el resultado** al portapapeles (con aviso tipo *toast*).
 
 ### Media
 5. **Multi-memoria / variables** (`M1`–`M9`, `A`, `B`…) y `STO`/`RCL`.
@@ -76,7 +76,7 @@ Ordenadas por prioridad.
 7. **Fracciones y decimales**: entrada/salida en fracción, conversión.
 8. **Conversión de bases**: decimal ⇄ bin ⇄ oct ⇄ hex.
 9. ✅ **Pruebas automatizadas** con `node:test` en `npm test`
-   (`test/engine.test.js` + `test/ui.smoke.test.js`, 8 pruebas).
+   (`test/engine.test.js` + `test/ui.smoke.test.js`, 11 pruebas).
 10. **Precisión configurable** (nº de decimales, notación científica forzada).
 11. **3 estados de tema**: claro / oscuro / automático (seguir sistema).
 

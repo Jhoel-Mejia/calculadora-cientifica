@@ -11,7 +11,11 @@ Funciona 100% en el navegador (HTML, CSS y JavaScript puro).
 - Modo de ángulo **DEG / RAD** conmutable
 - Memoria de último resultado (`Ans`)
 - **Memoria M**: `MC`, `MR`, `M+`, `M−`, `MS` (con indicador y persistencia)
-- **Historial** de cálculos (clic para reutilizar el resultado)
+- **Historial** de cálculos: clic para reutilizar el **resultado**, botón `↺` para
+  reutilizar la **expresión** (persistente)
+- **`%` configurable**: como **porcentaje** (`x/100`) o como **módulo** (`a % b`),
+  con el botón de modo de la cabecera (indicador `MOD`)
+- **Copiar resultado** al portapapeles (botón *Copiar*)
 - **Temas claro/oscuro** (detecta el sistema; conmutable y persistente)
 - Evaluación segura mediante parser propio (sin `eval`)
 - Soporte de teclado físico en escritorio

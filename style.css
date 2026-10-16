@@ -116,6 +116,22 @@ body {
 }
 .theme-btn:hover { background: var(--panel-hi); }
 
+.mode-btn {
+  margin-left: 10px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--panel-hi);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.mode-btn:hover { background: var(--panel-hi); }
+.mode-btn.active { color: var(--key-op); border-color: var(--key-op); }
+
 .screen {
   position: relative;
   padding: 12px 14px;
@@ -138,6 +154,22 @@ body {
 
 .ind { opacity: 0.3; }
 .ind.active { opacity: 1; }
+
+.copy-btn {
+  margin-left: auto;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #3c5238;
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.copy-btn:hover { background: rgba(0, 0, 0, 0.16); }
+.copy-btn:active { transform: translateY(1px); }
 
 .expr {
   min-height: 20px;
@@ -220,13 +252,28 @@ body {
 .history-item:hover { background: var(--panel-hi); }
 
 .h-expr {
+  flex: 1;
+  min-width: 0;
   color: var(--muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.h-res { font-weight: 700; }
+.h-res { flex: 0 0 auto; font-weight: 700; }
+
+.h-reuse {
+  flex: 0 0 auto;
+  padding: 0 5px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.h-reuse:hover { color: var(--key-op); background: var(--panel-hi); }
 
 .keys {
   display: grid;
@@ -279,6 +326,24 @@ body {
   outline: 2px solid var(--key-op);
   color: var(--key-op);
 }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 12px);
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: rgba(20, 24, 28, 0.94);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 20;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 @media (max-width: 350px) {
   .key { padding: 12px 0; font-size: 13px; }

@@ -12,6 +12,7 @@
     <header class="brand">
       <span class="brand-name">SCIENTIFIC</span>
       <span class="brand-model">fx-241</span>
+      <button id="pctBtn" class="mode-btn" type="button" aria-label="Significado de %: porcentaje o módulo" title="Cambiar el significado de % (porcentaje / módulo)">%</button>
       <button id="themeBtn" class="theme-btn" aria-label="Cambiar tema" title="Tema claro/oscuro">🌙</button>
     </header>
 
@@ -19,6 +20,8 @@
       <div class="indicators">
         <span id="angle" class="ind active">DEG</span>
         <span id="mem" class="ind">M</span>
+        <span id="mod" class="ind">MOD</span>
+        <button id="copyBtn" class="copy-btn" type="button" aria-label="Copiar resultado" title="Copiar resultado">Copiar</button>
       </div>
       <div id="expression" class="expr" aria-live="polite"></div>
       <output id="result" class="result">0</output>
@@ -58,7 +61,7 @@
       <button class="key fn" data-insert="^2" type="button">x²</button>
       <button class="key fn" data-insert="^" type="button">xʸ</button>
       <button class="key fn" data-insert="!" type="button">n!</button>
-      <button class="key fn" data-insert="%" type="button">%</button>
+      <button class="key fn" data-insert="%" id="pctKey" type="button" aria-label="Porcentaje o módulo">%</button>
       <button class="key fn" data-insert="*10^(" type="button">EXP</button>
 
       <button class="key num" data-insert="7" type="button">7</button>
@@ -83,6 +86,8 @@
       <button class="key eq" data-action="equals" type="button">=</button>
     </section>
   </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="engine.js"></script>
   <script src="script.js"></script>

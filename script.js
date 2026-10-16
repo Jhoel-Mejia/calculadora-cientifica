@@ -6,10 +6,15 @@
   var resEl = document.getElementById("result");
   var angleEl = document.getElementById("angle");
   var memEl = document.getElementById("mem");
+  var modEl = document.getElementById("mod");
   var degBtn = document.getElementById("degBtn");
+  var pctBtn = document.getElementById("pctBtn");
+  var pctKey = document.getElementById("pctKey");
+  var copyBtn = document.getElementById("copyBtn");
   var themeBtn = document.getElementById("themeBtn");
   var historyEl = document.getElementById("history");
   var historyList = document.getElementById("historyList");
+  var toastEl = document.getElementById("toast");
 
   function load(key, fallback) {
     try {
@@ -28,6 +33,7 @@
     angle: load("calc.angle", "DEG") === "RAD" ? "RAD" : "DEG",
     memory: load("calc.memory", 0),
     history: load("calc.history", []) || [],
+    percentMode: load("calc.percentMode", "percent") === "modulo" ? "modulo" : "percent",
     justEvaluated: false
   };
   if (!(state.ans === state.ans)) state.ans = 0;
@@ -42,13 +48,19 @@
     angleEl.textContent = state.angle;
     degBtn.textContent = state.angle;
     memEl.classList.toggle("active", state.memory !== 0);
+    var mod = state.percentMode === "modulo";
+    modEl.classList.toggle("active", mod);
+    pctBtn.textContent = mod ? "mod" : "%";
+    pctBtn.classList.toggle("active", mod);
+    pctKey.textContent = mod ? "mod" : "%";
+    pctKey.setAttribute("aria-label", mod ? "Módulo" : "Porcentaje");
   }
 
   var autoClose = Engine.autoClose;
 
   function preview() {
     if (state.expr.trim() === "") { state.result = "0"; return; }
-    try { state.result = Engine.format(Engine.evaluate(autoClose(state.expr), state.angle)); } catch (e) { /* mantener */ }
+    try { state.result = Engine.format(Engine.evaluate(autoClose(state.expr), state.angle, state.percentMode)); } catch (e) { /* mantener */ }
   }
 
   function insert(text) {
@@ -58,6 +70,13 @@
       state.justEvaluated = false;
     }
     state.expr += text;
+    preview();
+    render();
+  }
+
+  function insertExpr(text) {
+    state.expr = text;
+    state.justEvaluated = false;
     preview();
     render();
   }
@@ -88,7 +107,7 @@
 
   function currentValue() {
     if (state.expr.trim() === "") return state.ans;
-    try { return Engine.evaluate(state.expr, state.angle); } catch (e) { return state.ans; }
+    try { return Engine.evaluate(state.expr, state.angle, state.percentMode); } catch (e) { return state.ans; }
   }
 
   function setMemory(value) {
@@ -121,7 +140,20 @@
       var r = document.createElement("span");
       r.className = "h-res";
       r.textContent = "= " + item.r;
+      var reuse = document.createElement("button");
+      reuse.type = "button";
+      reuse.className = "h-reuse";
+      reuse.textContent = "\u21ba";
+      reuse.title = "Reutilizar expresión";
+      reuse.setAttribute("aria-label", "Reutilizar expresión " + item.e);
+      reuse.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        insertExpr(item.e);
+      });
+      reuse.addEventListener("keydown", function (ev) { ev.stopPropagation(); });
+
       li.appendChild(e);
+      li.appendChild(reuse);
       li.appendChild(r);
       li.tabIndex = 0;
       li.setAttribute("role", "button");
@@ -159,7 +191,7 @@
     if (state.expr.trim() === "") return;
     var closed = autoClose(state.expr);
     try {
-      var v = Engine.evaluate(closed, state.angle);
+      var v = Engine.evaluate(closed, state.angle, state.percentMode);
       state.expr = closed;
       state.ans = v;
       state.result = Engine.format(v);
@@ -201,6 +233,51 @@
     applyTheme(prefersLight ? "light" : "dark");
   }
 
+  function togglePercentMode() {
+    state.percentMode = state.percentMode === "percent" ? "modulo" : "percent";
+    save("calc.percentMode", state.percentMode);
+    updateIndicators();
+    preview();
+    render();
+  }
+
+  var toastTimer = null;
+  function showToast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 1500);
+  }
+
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  function copyResult() {
+    var text = state.result;
+    function done(ok) { showToast(ok ? "Copiado: " + text : "No se pudo copiar"); }
+    if (window.navigator && window.navigator.clipboard && window.navigator.clipboard.writeText) {
+      window.navigator.clipboard.writeText(text).then(
+        function () { done(true); },
+        function () { done(fallbackCopy(text)); }
+      );
+    } else {
+      done(fallbackCopy(text));
+    }
+  }
+
   document.querySelector(".keys").addEventListener("click", function (ev) {
     var btn = ev.target.closest("button.key");
     if (!btn) return;
@@ -222,6 +299,8 @@
   });
 
   themeBtn.addEventListener("click", toggleTheme);
+  pctBtn.addEventListener("click", togglePercentMode);
+  copyBtn.addEventListener("click", copyResult);
 
   historyEl.addEventListener("click", function (ev) {
     if (ev.target.closest("[data-action='histclear']")) clearHistory();

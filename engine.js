@@ -77,8 +77,9 @@
     };
   }
 
-  function evaluate(src, angle) {
+  function evaluate(src, angle, percentMode) {
     angle = angle || "DEG";
+    percentMode = percentMode === "modulo" ? "modulo" : "percent";
     var applyFunc = makeApplyFunc(angle);
     var tokens = tokenize(src);
     var pos = 0;
@@ -104,10 +105,14 @@
     function parseTerm() {
       var left = parseUnary();
       while (true) {
-        if (peek() && peek().t === "op" && (peek().v === "*" || peek().v === "/")) {
+        var t = peek();
+        var isMul = t && t.t === "op" && (t.v === "*" || t.v === "/" || (percentMode === "modulo" && t.v === "%"));
+        if (isMul) {
           var op = next().v;
           var right = parseUnary();
-          left = op === "*" ? left * right : left / right;
+          if (op === "*") left = left * right;
+          else if (op === "/") left = left / right;
+          else left = left % right;
         } else if (startsValue()) {
           left = left * parseUnary();
         } else break;
@@ -135,7 +140,7 @@
 
     function parsePostfix() {
       var v = parsePrimary();
-      while (peek() && peek().t === "op" && (peek().v === "!" || peek().v === "%")) {
+      while (peek() && peek().t === "op" && (peek().v === "!" || (percentMode === "percent" && peek().v === "%"))) {
         v = next().v === "!" ? factorial(v) : v / 100;
       }
       return v;
