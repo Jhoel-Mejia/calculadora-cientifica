@@ -50,10 +50,13 @@ La negación unaria tenía más prioridad que la potencia; se corrigió la gram�
 (`unary → power → postfix`) para que `-2^2 = -4` y `2^-3 = 0.125`.
 - **Criterio:** `-2^2` = `-4`, `(-2)^2` = `4`, `2^-3` = `0.125`. (probado)
 
-### B7 — `e` como constante vs. notación científica — Documentado (no bug)
-`1e3` se interpreta como `1 × e × 3` (constante de Euler), **no** como `1000`.
-Para exponentes usa el botón **EXP** (`×10^(`).
-- **Posible mejora:** detectar notación `NeM` cuando no haya ambigüedad.
+### B7 — Notación científica no parseada — ✅ Resuelto
+El motor no reconocía `NeM`: `1e+12` se evaluaba como `1 · e · 12` (Euler) y
+`2e3` como `2 · e · 3`, dando resultados erróneos **en silencio** al reutilizar
+`Ans`, `MR`, `RCL` o una entrada del historial (cuyos valores se muestran en
+notación científica). Ahora el escáner de números consume `e`/`E` + exponente con
+signo (`2e3 = 2000`, `1e-7`, `1e+12`); `e` suelta sigue siendo la constante de
+Euler (`2e = 2·e`). El botón **EXP** (`×10^(`) sigue disponible.
 
 ---
 
@@ -82,7 +85,7 @@ Ordenadas por prioridad.
 8. ✅ **Conversión de bases**: entrada `0x`/`0b`/`0o` y panel `Base`
    (dec/hex/oct/bin); clic en una fila inserta el literal.
 9. ✅ **Pruebas automatizadas** con `node:test` en `npm test`
-   (`test/engine.test.js` + `test/ui.smoke.test.js`, 24 pruebas).
+   (`test/engine.test.js` + `test/ui.smoke.test.js`, 31 pruebas).
 10. **Precisión configurable** (nº de decimales, notación científica forzada).
 11. **3 estados de tema**: claro / oscuro / automático (seguir sistema).
 

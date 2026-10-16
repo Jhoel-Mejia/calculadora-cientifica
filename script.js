@@ -106,7 +106,7 @@
     pctBtn.textContent = mod ? "mod" : "%";
     pctBtn.classList.toggle("active", mod);
     pctKey.textContent = mod ? "mod" : "%";
-    pctKey.setAttribute("aria-label", mod ? "Módulo" : "Porcentaje");
+    pctKey.setAttribute("aria-label", mod ? t("pct.keyModulo") : t("pct.keyPercent"));
   }
 
   var autoClose = Engine.autoClose;
@@ -122,7 +122,7 @@
 
   function insert(text) {
     if (state.justEvaluated) {
-      if (/^[0-9.]/.test(text) || /^[a-z\u03c0\u221a(]/.test(text)) state.expr = "";
+      if (/^[0-9.]/.test(text) || /^[a-zA-Z\u03c0\u221a(]/.test(text)) state.expr = "";
       else state.expr = Engine.format(state.ans);
       state.justEvaluated = false;
     }
@@ -148,7 +148,7 @@
 
   function backspace() {
     state.justEvaluated = false;
-    var m = state.expr.match(/(asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log\(|ln\(|sqrt\(|\u221a\(|\*10\()$/);
+    var m = state.expr.match(/(asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log\(|ln\(|sqrt\(|abs\(|cbrt\(|\u221a\(|\*10\(|1\/\()$/);
     state.expr = m ? state.expr.slice(0, -m[0].length) : state.expr.slice(0, -1);
     preview();
     render();
@@ -271,12 +271,19 @@
   function renderBase() {
     if (!baseList || !baseBtn) return;
     baseList.innerHTML = "";
-    var finite = isFinite(state.value);
+    var dash = "\u2014";
+    var valid = state.result !== "Error" && isFinite(state.value);
+    function cell(label, base, prefix) {
+      if (!valid) return { label: label, value: dash, insert: null, ok: false };
+      var value = base ? Engine.toBase(state.value, base) : state.result;
+      var ins = base ? baseLiteral(state.value, prefix, base) : state.result;
+      return { label: label, value: value, insert: ins, ok: true };
+    }
     var rows = [
-      { label: "DEC", value: state.result, insert: state.result, ok: finite },
-      { label: "HEX", value: Engine.toBase(state.value, 16), insert: baseLiteral(state.value, "0x", 16), ok: finite },
-      { label: "OCT", value: Engine.toBase(state.value, 8), insert: baseLiteral(state.value, "0o", 8), ok: finite },
-      { label: "BIN", value: Engine.toBase(state.value, 2), insert: baseLiteral(state.value, "0b", 2), ok: finite }
+      cell("DEC", 0, ""),
+      cell("HEX", 16, "0x"),
+      cell("OCT", 8, "0o"),
+      cell("BIN", 2, "0b")
     ];
     rows.forEach(function (row) {
       var li = document.createElement("li");
@@ -291,7 +298,8 @@
       li.appendChild(v);
       li.tabIndex = 0;
       li.setAttribute("role", "button");
-      li.addEventListener("click", function () { if (row.ok) insert(row.insert); });
+      li.setAttribute("aria-disabled", row.ok ? "false" : "true");
+      li.addEventListener("click", function () { if (row.ok && row.insert !== null) insert(row.insert); });
       baseList.appendChild(li);
     });
   }
@@ -365,6 +373,7 @@
       }
     }
     if (langBtn) langBtn.textContent = state.lang.toUpperCase();
+    updateIndicators();
     renderHistory();
     renderVars();
   }
@@ -533,8 +542,22 @@
 
   fracInsertBtn.addEventListener("click", insertFraction);
 
+  function isTextEntry(el) {
+    if (!el) return false;
+    var tag = el.tagName ? String(el.tagName).toUpperCase() : "";
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+    return el.isContentEditable === true;
+  }
+
   document.addEventListener("keydown", function (ev) {
+    if (isTextEntry(ev.target)) return;
     var key = ev.key;
+    var active = document.activeElement;
+    if ((key === "Enter" || key === " " || key === "Spacebar") && active &&
+        active.tagName && String(active.tagName).toUpperCase() === "BUTTON" &&
+        active.closest && !active.closest(".keys")) {
+      return;
+    }
     if (/^[0-9.]$/.test(key)) { insert(key); ev.preventDefault(); }
     else if (key === "+" || key === "-" || key === "^" || key === "(" || key === ")" || key === "!" || key === "%") { insert(key); ev.preventDefault(); }
     else if (key === "*") { insert("\u00d7"); ev.preventDefault(); }

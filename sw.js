@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE = "fx241-v3";
+var CACHE = "fx241-v4";
 var ASSETS = [
   "./",
   "./index.html",

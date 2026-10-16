@@ -20,6 +20,8 @@ HTML + CSS + JavaScript puro, sin dependencias ni build.
 - Variables: `A`–`F` en **mayúscula**; `e` (minúscula) es el número de Euler y
   `pi`/`π` la constante pi. `evaluate(src, angle, percentMode, vars)`.
 - Bases: literales `0x` (hex), `0b` (bin), `0o` (oct). `toBase(n, base)`.
+- Notación científica `NeM` pegada a un número (`2e3` = 2000, `1e-7`); la `e`
+  suelta sigue siendo la constante de Euler (`2e` = `2·e`).
 
 ## i18n
 

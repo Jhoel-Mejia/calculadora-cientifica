@@ -8,6 +8,8 @@ Funciona 100% en el navegador (HTML, CSS y JavaScript puro).
 - Operaciones básicas: `+ − × ÷`
 - Funciones científicas: `sin`, `cos`, `tan`, `log`, `ln`, `√`, `x²`, `xʸ`,
   `n!`, `%`, `1/x` (vía `^`), `π`, `e`
+- **Notación científica**: `2e3` = `2000`, `1e+12`, `1e-7`; la `e` suelta sigue
+  siendo la constante de Euler (`2e` = `2·e`)
 - Modo de ángulo **DEG / RAD** conmutable
 - Memoria de último resultado (`Ans`)
 - **Memoria M1–M9**: `MC`, `MR`, `M+`, `M−`, `MS` operan sobre la ranura
@@ -63,7 +65,8 @@ python3 -m http.server 8080
 | `r` `p` `e`  | `√(` `π` `e`      |
 
 Los paréntesis sin cerrar se completan automáticamente al calcular
-(por ejemplo `(2+3` se evalúa como `(2+3)`).
+(por ejemplo `(2+3` se evalúa como `(2+3)`). Los atajos se ignoran mientras
+escribes en los campos del panel `Frac`.
 
 ## PWA (instalable y sin conexión)
 
@@ -74,8 +77,8 @@ La app es una PWA: se puede instalar y funciona **offline**.
 - En Android/Chrome: menú → **Instalar aplicación** / **Añadir a pantalla de
   inicio**. Requiere servirse por **HTTPS** (GitHub Pages lo cumple). Abrir el
   archivo directamente con `file://` **no** habilita la PWA ni el service worker.
-- Al cambiar los archivos, **sube la versión de `CACHE` en `sw.js`** (`fx241-v1`
-  → `fx241-v2`) para forzar la actualización del caché.
+- Al cambiar los archivos, **sube la versión de `CACHE` en `sw.js`** (p. ej.
+  `fx241-v3` → `fx241-v4`) para forzar la actualización del caché.
 
 ## Estructura
 

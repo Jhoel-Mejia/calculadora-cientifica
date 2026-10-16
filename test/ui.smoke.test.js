@@ -76,11 +76,16 @@ function setup() {
 
   const press = (key) => (docHandlers.keydown || []).forEach((fn) => fn({ key, preventDefault() {}, stopPropagation() {} }));
   const type = (str) => str.split("").forEach(press);
+  const pressOn = (target, key) => (docHandlers.keydown || []).forEach((fn) => fn({ key, target, preventDefault() {}, stopPropagation() {} }));
   const clickKey = (action) => {
     const btn = { getAttribute: (k) => (k === "data-action" ? action : null) };
     (keys._handlers.click || []).forEach((fn) => fn({ target: { closest: () => btn } }));
   };
-  return { els, press, type, clickKey };
+  const clickInsert = (text) => {
+    const btn = { getAttribute: (k) => (k === "data-insert" ? text : null) };
+    (keys._handlers.click || []).forEach((fn) => fn({ target: { closest: () => btn } }));
+  };
+  return { els, press, type, pressOn, clickKey, clickInsert };
 }
 
 test("arranque: estado inicial", () => {
@@ -203,4 +208,59 @@ test("toggle de % cambia entre porcentaje y modulo", () => {
   type("10%3");
   press("Enter");
   assert.strictEqual(els.result.textContent, "1");
+});
+
+test("backspace elimina funciones compuestas abs( y cbrt(", () => {
+  const { els, press, clickInsert } = setup();
+  clickInsert("abs(");
+  assert.strictEqual(els.expression.textContent, "abs(");
+  press("Backspace");
+  assert.strictEqual(els.expression.textContent, "");
+  clickInsert("cbrt(");
+  press("Backspace");
+  assert.strictEqual(els.expression.textContent, "");
+});
+
+test("el teclado no interviene en campos de texto", () => {
+  const { els, pressOn } = setup();
+  pressOn({ tagName: "INPUT" }, "5");
+  pressOn({ tagName: "INPUT" }, "Enter");
+  assert.strictEqual(els.expression.textContent, "");
+  assert.strictEqual(els.result.textContent, "0");
+});
+
+test("Enter en boton fuera del teclado no evalua; en teclado si", () => {
+  const { els, press, type } = setup();
+  type("2+3");
+  global.document.activeElement = { tagName: "BUTTON", closest: () => null };
+  press("Enter");
+  assert.strictEqual(els.historyList.children[0].className, "history-empty");
+  global.document.activeElement = { tagName: "BUTTON", closest: (s) => (s === ".keys" ? {} : null) };
+  press("Enter");
+  assert.strictEqual(els.historyList.children[0].className, "history-item");
+});
+
+test("panel Base no muestra ni inserta Error", () => {
+  const { els, press, type } = setup();
+  type("2+");
+  press("Enter");
+  assert.strictEqual(els.result.textContent, "Error");
+  assert.strictEqual(els.baseList.children[0].children[1].textContent, "\u2014");
+  els.baseList.children[0].click();
+  assert.strictEqual(els.expression.textContent, "2+");
+});
+
+test("insertar variable tras evaluar inicia expresion nueva", () => {
+  const { els, press, type } = setup();
+  type("5");
+  press("Enter");
+  els.varList.children[0].children[0].click();
+  assert.strictEqual(els.expression.textContent, "A");
+});
+
+test("aria-label de la tecla % se traduce (ES/EN)", () => {
+  const { els } = setup();
+  assert.strictEqual(els.pctKey.getAttribute("aria-label"), "Porcentaje");
+  els.langBtn.click();
+  assert.strictEqual(els.pctKey.getAttribute("aria-label"), "Percent");
 });

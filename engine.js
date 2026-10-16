@@ -32,6 +32,13 @@
       if (isDigit(c) || c === ".") {
         var j = i;
         while (j < n && (isDigit(s[j]) || s[j] === ".")) j++;
+        if (j < n && (s[j] === "e" || s[j] === "E")) {
+          var ex = j + 1;
+          if (ex < n && (s[ex] === "+" || s[ex] === "-")) ex++;
+          var dstart = ex;
+          while (ex < n && isDigit(s[ex])) ex++;
+          if (ex > dstart) j = ex;
+        }
         var numStr = s.slice(i, j);
         if ((numStr.match(/\./g) || []).length > 1) throw new Error("Numero invalido");
         tokens.push({ t: "num", v: parseFloat(numStr) });

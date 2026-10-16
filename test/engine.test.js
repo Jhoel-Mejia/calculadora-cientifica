@@ -103,6 +103,19 @@ test("entrada en bases 0x/0b/0o y toBase", () => {
   assert.throws(() => E.evaluate("0b2", "DEG"), "digito invalido");
 });
 
+test("notacion cientifica NeM (e/E con exponente)", () => {
+  assert.strictEqual(ev("2e3"), "2000");
+  assert.strictEqual(ev("1.5e2"), "150");
+  assert.strictEqual(ev("2E3"), "2000");
+  assert.strictEqual(ev("6e-2"), "0.06");
+  assert.strictEqual(ev("1e+12"), "1e+12");
+  assert.strictEqual(ev("1e-7"), "1e-7");
+  assert.strictEqual(ev("e"), "2.71828182846");
+  assert.strictEqual(ev("2e"), "5.43656365692");
+  assert.strictEqual(ev("0x1e3"), "483");
+  assert.throws(() => ev("1e309"), "fuera de rango");
+});
+
 test("i18n: diccionarios es/en con fallback", () => {
   const I18N = require("../i18n.js").I18N;
   assert.strictEqual(I18N.get("es", "copy.label"), "Copiar");
