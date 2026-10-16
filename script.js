@@ -8,6 +8,7 @@
   var memEl = document.getElementById("mem");
   var modEl = document.getElementById("mod");
   var degBtn = document.getElementById("degBtn");
+  var slotBtn = document.getElementById("slotBtn");
   var pctBtn = document.getElementById("pctBtn");
   var pctKey = document.getElementById("pctKey");
   var copyBtn = document.getElementById("copyBtn");
@@ -31,13 +32,18 @@
     result: "0",
     ans: load("calc.ans", 0),
     angle: load("calc.angle", "DEG") === "RAD" ? "RAD" : "DEG",
-    memory: load("calc.memory", 0),
+    mem: load("calc.mem", null),
+    slot: (function () { var s = parseInt(load("calc.slot", 1), 10); return (s >= 1 && s <= 9) ? s : 1; })(),
     history: load("calc.history", []) || [],
     percentMode: load("calc.percentMode", "percent") === "modulo" ? "modulo" : "percent",
     justEvaluated: false
   };
   if (!(state.ans === state.ans)) state.ans = 0;
-  if (!(state.memory === state.memory)) state.memory = 0;
+  if (!state.mem || typeof state.mem !== "object") {
+    state.mem = {};
+    var oldMem = load("calc.memory", null);
+    if (oldMem !== null && isFinite(oldMem)) state.mem[1] = oldMem;
+  }
 
   function render() {
     exprEl.textContent = state.expr;
@@ -47,7 +53,9 @@
   function updateIndicators() {
     angleEl.textContent = state.angle;
     degBtn.textContent = state.angle;
-    memEl.classList.toggle("active", state.memory !== 0);
+    memEl.textContent = "M" + state.slot;
+    memEl.classList.toggle("active", memHas(state.slot));
+    if (slotBtn) slotBtn.textContent = "M" + state.slot;
     var mod = state.percentMode === "modulo";
     modEl.classList.toggle("active", mod);
     pctBtn.textContent = mod ? "mod" : "%";
@@ -110,17 +118,26 @@
     try { return Engine.evaluate(state.expr, state.angle, state.percentMode); } catch (e) { return state.ans; }
   }
 
-  function setMemory(value) {
-    state.memory = isFinite(value) ? value : 0;
-    persistMemory();
+  function memHas(n) { return typeof state.mem[n] === "number" && isFinite(state.mem[n]); }
+  function persistMem() { save("calc.mem", state.mem); }
+  function setSlotMemory(value) {
+    state.mem[state.slot] = isFinite(value) ? value : 0;
+    persistMem();
     updateIndicators();
   }
-  function memStore() { setMemory(currentValue()); }
-  function memAdd() { setMemory(state.memory + currentValue()); }
-  function memSub() { setMemory(state.memory - currentValue()); }
-  function memRecall() { insert(Engine.format(state.memory)); }
-  function memClear() { setMemory(0); }
-  function persistMemory() { save("calc.memory", state.memory); }
+  function memStore() { setSlotMemory(currentValue()); }
+  function memAdd() { setSlotMemory((memHas(state.slot) ? state.mem[state.slot] : 0) + currentValue()); }
+  function memSub() { setSlotMemory((memHas(state.slot) ? state.mem[state.slot] : 0) - currentValue()); }
+  function memRecall() {
+    if (memHas(state.slot)) insert(Engine.format(state.mem[state.slot]));
+    else showToast("M" + state.slot + " vacía");
+  }
+  function memClear() { delete state.mem[state.slot]; persistMem(); updateIndicators(); }
+  function cycleSlot() {
+    state.slot = state.slot % 9 + 1;
+    save("calc.slot", state.slot);
+    updateIndicators();
+  }
 
   function renderHistory() {
     historyList.innerHTML = "";
@@ -299,6 +316,7 @@
   });
 
   themeBtn.addEventListener("click", toggleTheme);
+  slotBtn.addEventListener("click", cycleSlot);
   pctBtn.addEventListener("click", togglePercentMode);
   copyBtn.addEventListener("click", copyResult);
 

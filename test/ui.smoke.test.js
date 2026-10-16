@@ -33,9 +33,10 @@ function fakeEvent() {
 
 function setup() {
   const els = {};
-  ["expression", "result", "angle", "mem", "mod", "degBtn", "pctBtn", "pctKey",
+  ["expression", "result", "angle", "mem", "mod", "degBtn", "slotBtn", "pctBtn", "pctKey",
     "copyBtn", "themeBtn", "history", "historyList", "toast"].forEach((id) => { els[id] = makeEl(id); });
   const meta = makeEl("meta");
+  const keys = makeEl("keys");
   const docHandlers = {};
 
   global.window = { matchMedia: () => ({ matches: false }), localStorage: null, navigator: null };
@@ -54,7 +55,7 @@ function setup() {
       getAttribute(k) { return this._attrs[k] || null; }
     },
     getElementById: (id) => els[id] || makeEl(id),
-    querySelector: (sel) => (sel.indexOf("theme-color") !== -1 ? meta : makeEl("keys")),
+    querySelector: (sel) => (sel.indexOf("theme-color") !== -1 ? meta : keys),
     createElement: () => makeEl(),
     addEventListener(type, fn) { (docHandlers[type] = docHandlers[type] || []).push(fn); }
   };
@@ -66,7 +67,11 @@ function setup() {
 
   const press = (key) => (docHandlers.keydown || []).forEach((fn) => fn({ key, preventDefault() {}, stopPropagation() {} }));
   const type = (str) => str.split("").forEach(press);
-  return { els, press, type };
+  const clickKey = (action) => {
+    const btn = { getAttribute: (k) => (k === "data-action" ? action : null) };
+    (keys._handlers.click || []).forEach((fn) => fn({ target: { closest: () => btn } }));
+  };
+  return { els, press, type, clickKey };
 }
 
 test("arranque: estado inicial", () => {
@@ -88,6 +93,29 @@ test("teclado: calculo basico y autocierre de parentesis", () => {
   press("Enter");
   assert.strictEqual(els.expression.textContent, "(2+3)");
   assert.strictEqual(els.result.textContent, "5");
+});
+
+test("multi-memoria M1-M9 y cambio de ranura", () => {
+  const { els, press, type, clickKey } = setup();
+  type("5");
+  press("Enter");
+  clickKey("ms");
+  assert.strictEqual(els.mem.textContent, "M1");
+  assert.strictEqual(els.mem.classList.contains("active"), true);
+
+  els.slotBtn.click();
+  assert.strictEqual(els.slotBtn.textContent, "M2");
+  assert.strictEqual(els.mem.classList.contains("active"), false);
+
+  press("Escape");
+  type("7");
+  press("Enter");
+  clickKey("mplus");
+  assert.strictEqual(els.mem.classList.contains("active"), true);
+
+  press("Escape");
+  clickKey("mr");
+  assert.strictEqual(els.expression.textContent, "7");
 });
 
 test("toggle de % cambia entre porcentaje y modulo", () => {

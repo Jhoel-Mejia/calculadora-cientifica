@@ -10,7 +10,9 @@ Funciona 100% en el navegador (HTML, CSS y JavaScript puro).
   `n!`, `%`, `1/x` (vía `^`), `π`, `e`
 - Modo de ángulo **DEG / RAD** conmutable
 - Memoria de último resultado (`Ans`)
-- **Memoria M**: `MC`, `MR`, `M+`, `M−`, `MS` (con indicador y persistencia)
+- **Memoria M1–M9**: `MC`, `MR`, `M+`, `M−`, `MS` operan sobre la ranura
+  activa; el botón `M1…M9` de la cabecera cambia de ranura (indicador y
+  persistencia por ranura)
 - **Historial** de cálculos: clic para reutilizar el **resultado**, botón `↺` para
   reutilizar la **expresión** (persistente)
 - **`%` configurable**: como **porcentaje** (`x/100`) o como **módulo** (`a % b`),
