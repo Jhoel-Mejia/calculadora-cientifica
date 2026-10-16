@@ -3,28 +3,33 @@ const assert = require("node:assert");
 const path = require("node:path");
 
 function makeEl(id) {
-  return {
+  const el = {
     id: id || "",
     textContent: "",
-    innerHTML: "",
     value: "",
     style: {},
+    children: [],
     _attrs: {},
     _handlers: {},
     classList: {
       _s: new Set(),
-      toggle(c, f) { f ? this._s.add(c) : this._s.delete(c); },
+      toggle(c, f) {
+        if (f === undefined) { this._s.has(c) ? this._s.delete(c) : this._s.add(c); }
+        else { f ? this._s.add(c) : this._s.delete(c); }
+      },
       add(c) { this._s.add(c); },
       remove(c) { this._s.delete(c); },
       contains(c) { return this._s.has(c); }
     },
     setAttribute(k, v) { this._attrs[k] = v; },
     getAttribute(k) { return k in this._attrs ? this._attrs[k] : null; },
-    addEventListener(type, fn) { (this._handlers[type] = this._handlers[type] || []).push(fn); },
-    appendChild() {},
+    addEventListener(type, fn) { (el._handlers[type] = el._handlers[type] || []).push(fn); },
+    appendChild(child) { el.children.push(child); },
     closest() { return null; },
-    click() { (this._handlers.click || []).forEach((fn) => fn(fakeEvent())); }
+    click() { (el._handlers.click || []).forEach((fn) => fn(fakeEvent())); }
   };
+  Object.defineProperty(el, "innerHTML", { get() { return ""; }, set() { el.children.length = 0; } });
+  return el;
 }
 
 function fakeEvent() {
@@ -34,7 +39,9 @@ function fakeEvent() {
 function setup() {
   const els = {};
   ["expression", "result", "angle", "mem", "mod", "degBtn", "slotBtn", "pctBtn", "pctKey",
-    "fracBtn", "copyBtn", "themeBtn", "history", "historyList", "toast"].forEach((id) => { els[id] = makeEl(id); });
+    "fracBtn", "copyBtn", "themeBtn", "history", "historyList", "toast",
+    "varPanel", "varList", "fracPanel", "fracInsertBtn", "fracWhole", "fracNum", "fracDen"]
+    .forEach((id) => { els[id] = makeEl(id); });
   const meta = makeEl("meta");
   const keys = makeEl("keys");
   const docHandlers = {};
@@ -126,6 +133,40 @@ test("multi-memoria M1-M9 y cambio de ranura", () => {
   press("Escape");
   clickKey("mr");
   assert.strictEqual(els.expression.textContent, "7");
+});
+
+test("paneles Var/Frac y tecla 1/x", () => {
+  const { els, press, type, clickKey } = setup();
+  clickKey("vartoggle");
+  assert.strictEqual(els.varPanel.classList.contains("open"), true);
+  clickKey("fractoggle");
+  assert.strictEqual(els.fracPanel.classList.contains("open"), true);
+  type("5");
+  press("Enter");
+  clickKey("inv");
+  assert.strictEqual(els.expression.textContent, "1/(5)");
+  assert.strictEqual(els.result.textContent, "0.2");
+});
+
+test("variables: STO y RCL desde el panel", () => {
+  const { els, press, type } = setup();
+  type("5");
+  press("Enter");
+  els.varList.children[0].children[2].click();
+  assert.strictEqual(els.varList.children[0].children[1].textContent, "5");
+  press("Escape");
+  els.varList.children[0].children[3].click();
+  assert.strictEqual(els.expression.textContent, "5");
+});
+
+test("entrada de fraccion inserta la expresion", () => {
+  const { els } = setup();
+  els.fracWhole.value = "1";
+  els.fracNum.value = "3";
+  els.fracDen.value = "4";
+  els.fracInsertBtn.click();
+  assert.strictEqual(els.expression.textContent, "(1+(3/4))");
+  assert.strictEqual(els.result.textContent, "1.75");
 });
 
 test("toggle de % cambia entre porcentaje y modulo", () => {

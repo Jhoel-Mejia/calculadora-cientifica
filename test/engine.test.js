@@ -2,8 +2,8 @@ const test = require("node:test");
 const assert = require("node:assert");
 const E = require("../engine.js");
 
-function ev(expr, angle) {
-  return E.format(E.evaluate(expr, angle || "DEG"));
+function ev(expr, angle, vars) {
+  return E.format(E.evaluate(expr, angle || "DEG", "percent", vars));
 }
 
 test("operaciones basicas", () => {
@@ -71,6 +71,24 @@ test("fracciones (exactas; null si no lo son)", () => {
   assert.strictEqual(E.formatFraction(7), "7");
   assert.strictEqual(E.formatFraction(Math.PI), null);
   assert.strictEqual(E.formatFraction(Math.SQRT2), null);
+});
+
+test("variables A-F (E mayuscula = variable; e minuscula = Euler)", () => {
+  assert.strictEqual(ev("A+1", "DEG", { A: 2 }), "3");
+  assert.strictEqual(ev("2A", "DEG", { A: 3 }), "6");
+  assert.strictEqual(ev("A*B", "DEG", { A: 2, B: 5 }), "10");
+  assert.strictEqual(ev("E", "DEG", { E: 5 }), "5");
+  assert.strictEqual(ev("e", "DEG", {}), "2.71828182846");
+  assert.throws(() => E.evaluate("B+1", "DEG", "percent", {}), "variable vacia");
+});
+
+test("fractionToExpr construye la expresion de fraccion", () => {
+  assert.strictEqual(E.fractionToExpr(0, 3, 4), "(3/4)");
+  assert.strictEqual(E.fractionToExpr(1, 3, 4), "(1+(3/4))");
+  assert.strictEqual(E.fractionToExpr("", 3, 4), "(3/4)");
+  assert.strictEqual(E.fractionToExpr(0, 3, 0), null);
+  assert.strictEqual(E.fractionToExpr(0, 1.5, 2), null);
+  assert.strictEqual(ev(E.fractionToExpr(1, 3, 4), "DEG"), "1.75");
 });
 
 test("autoClose equilibra parentesis", () => {

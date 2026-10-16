@@ -42,6 +42,27 @@
       <ul id="historyList" class="history-list"></ul>
     </section>
 
+    <section class="history" id="varPanel" aria-label="Variables A a F">
+      <div class="history-head">
+        <span>Variables</span>
+        <button class="history-clear" data-action="varclear" type="button">Borrar</button>
+      </div>
+      <ul id="varList" class="history-list"></ul>
+    </section>
+
+    <section class="history" id="fracPanel" aria-label="Entrada de fracción">
+      <div class="history-head">
+        <span>Fracción</span>
+        <button class="history-clear" id="fracInsertBtn" type="button">Insertar</button>
+      </div>
+      <div class="frac-fields">
+        <input id="fracWhole" type="number" inputmode="numeric" placeholder="ent" aria-label="Parte entera">
+        <input id="fracNum" type="number" inputmode="numeric" placeholder="num" aria-label="Numerador">
+        <span class="frac-slash">/</span>
+        <input id="fracDen" type="number" inputmode="numeric" placeholder="den" aria-label="Denominador">
+      </div>
+    </section>
+
     <section class="keys">
       <button class="key mem" data-action="mc" type="button">MC</button>
       <button class="key mem" data-action="mr" type="button">MR</button>
@@ -91,6 +112,13 @@
       <button class="key num" data-insert="0" type="button">0</button>
       <button class="key num" data-insert="." type="button">.</button>
       <button class="key eq" data-action="equals" type="button">=</button>
+
+      <button class="key fn" data-action="vartoggle" type="button">Var</button>
+      <button class="key fn" data-action="fractoggle" type="button">Frac</button>
+      <button class="key fn" data-action="inv" type="button">1/x</button>
+      <button class="key fn" data-insert="abs(" type="button">|x|</button>
+      <button class="key fn" data-insert="^3" type="button">x³</button>
+      <button class="key fn" data-insert="cbrt(" type="button">∛</button>
     </section>
   </main>
 

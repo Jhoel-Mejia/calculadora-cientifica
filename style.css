@@ -207,6 +207,9 @@ body {
 }
 
 .history.open { max-height: 170px; }
+#varPanel.open { max-height: 250px; }
+#varPanel .history-list { max-height: 200px; }
+#fracPanel.open { max-height: 120px; }
 
 .history-head {
   display: flex;
@@ -280,6 +283,77 @@ body {
   cursor: pointer;
 }
 .h-reuse:hover { color: var(--key-op); background: var(--panel-hi); }
+
+.var-item { align-items: center; }
+
+.v-name {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--key-op);
+  background: var(--panel-hi);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.v-val {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.v-btn {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--text);
+  background: var(--key-mem);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.v-btn:hover { background: var(--key-hi); }
+
+.frac-fields {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 12px;
+}
+
+.frac-fields input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 8px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--text);
+  background: var(--key);
+  border: 1px solid var(--panel-hi);
+  border-radius: 7px;
+  -moz-appearance: textfield;
+}
+
+.frac-fields input::-webkit-outer-spin-button,
+.frac-fields input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.frac-slash {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--muted);
+}
 
 .keys {
   display: grid;

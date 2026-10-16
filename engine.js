@@ -5,8 +5,9 @@
   "use strict";
 
   var FUNCS = ["sin", "cos", "tan", "asin", "acos", "atan", "log", "ln", "sqrt", "abs", "cbrt"];
+  var VARS = ["A", "B", "C", "D", "E", "F"];
 
-  function tokenize(src) {
+  function tokenize(src, vars) {
     var s = src.replace(/\u00d7/g, "*").replace(/\u00f7/g, "/").replace(/\u2212/g, "-");
     var tokens = [];
     var i = 0;
@@ -30,11 +31,13 @@
       if (isAlpha(c)) {
         var k = i;
         while (k < n && isAlpha(s[k])) k++;
-        var name = s.slice(i, k).toLowerCase();
+        var raw = s.slice(i, k);
+        var name = raw.toLowerCase();
         if (name === "pi") tokens.push({ t: "const", v: Math.PI });
-        else if (name === "e") tokens.push({ t: "const", v: Math.E });
+        else if (raw === "e") tokens.push({ t: "const", v: Math.E });
         else if (FUNCS.indexOf(name) !== -1) tokens.push({ t: "func", v: name });
-        else throw new Error("Desconocido: " + name);
+        else if (raw.length === 1 && VARS.indexOf(raw) !== -1) tokens.push({ t: "var", v: raw });
+        else throw new Error("Desconocido: " + raw);
         i = k;
         continue;
       }
@@ -77,11 +80,12 @@
     };
   }
 
-  function evaluate(src, angle, percentMode) {
+  function evaluate(src, angle, percentMode, vars) {
     angle = angle || "DEG";
     percentMode = percentMode === "modulo" ? "modulo" : "percent";
+    vars = vars || {};
     var applyFunc = makeApplyFunc(angle);
-    var tokens = tokenize(src);
+    var tokens = tokenize(src, vars);
     var pos = 0;
     function peek() { return tokens[pos]; }
     function next() { return tokens[pos++]; }
@@ -89,7 +93,7 @@
     function startsValue() {
       var t = peek();
       if (!t) return false;
-      return t.t === "num" || t.t === "const" || t.t === "func" || (t.t === "op" && t.v === "(");
+      return t.t === "num" || t.t === "const" || t.t === "var" || t.t === "func" || (t.t === "op" && t.v === "(");
     }
 
     function parseExpr() {
@@ -151,6 +155,11 @@
       if (!t) throw new Error("Expresion incompleta");
       if (t.t === "num") { next(); return t.v; }
       if (t.t === "const") { next(); return t.v; }
+      if (t.t === "var") {
+        next();
+        if (typeof vars[t.v] !== "number" || !isFinite(vars[t.v])) throw new Error("Variable " + t.v + " vacia");
+        return vars[t.v];
+      }
       if (t.t === "func") {
         var name = next().v;
         if (!isOp("(")) throw new Error("Falta (");
@@ -228,12 +237,26 @@
     return sign + num + "/" + f.d;
   }
 
+  function fractionToExpr(whole, num, den) {
+    whole = whole === "" || whole === null || whole === undefined ? 0 : Number(whole);
+    num = Number(num);
+    den = Number(den);
+    if (!isFinite(whole) || !isFinite(num) || !isFinite(den)) return null;
+    if (den === 0) return null;
+    if (Math.floor(whole) !== whole || Math.floor(num) !== num || Math.floor(den) !== den) return null;
+    var frac = "(" + num + "/" + den + ")";
+    if (whole === 0) return frac;
+    return "(" + whole + "+" + frac + ")";
+  }
+
   return {
     evaluate: evaluate,
     format: format,
     tokenize: tokenize,
     autoClose: autoClose,
     toFraction: toFraction,
-    formatFraction: formatFraction
+    formatFraction: formatFraction,
+    fractionToExpr: fractionToExpr,
+    VARS: VARS.slice()
   };
 });

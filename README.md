@@ -18,8 +18,14 @@ Funciona 100% en el navegador (HTML, CSS y JavaScript puro).
 - **`%` configurable**: como **porcentaje** (`x/100`) o como **módulo** (`a % b`),
   con el botón de modo de la cabecera (indicador `MOD`)
 - **Copiar resultado** al portapapeles (botón *Copiar*)
-- **Fracciones**: el botón `a/b` muestra el resultado como fracción simplificada
-  cuando es exacta (`0.5 → 1/2`, `1.5 → 1 1/2`); si no, mantiene el decimal
+- **Fracciones** (salida): el botón `a/b` muestra el resultado como fracción
+  simplificada cuando es exacta (`0.5 → 1/2`, `1.5 → 1 1/2`); si no, el decimal
+- **Entrada de fracciones**: botón `Frac` abre un panel con parte entera,
+  numerador y denominador; *Insertar* añade `(entero+num/den)` a la expresión
+- **Variables A–F**: botón `Var` abre un panel; `STO` guarda el valor actual en
+  una variable, `RCL` inserta su valor y tocar la letra la inserta en la
+  expresión. (`A`–`F` en mayúscula son variables; `e` minúscula es el número de Euler.)
+- **Teclas extra**: `1/x`, `|x|`, `x³`, `∛`
 - **Temas claro/oscuro** (detecta el sistema; conmutable y persistente)
 - Evaluación segura mediante parser propio (sin `eval`)
 - Soporte de teclado físico en escritorio

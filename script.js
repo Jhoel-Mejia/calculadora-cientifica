@@ -17,6 +17,14 @@
   var historyEl = document.getElementById("history");
   var historyList = document.getElementById("historyList");
   var toastEl = document.getElementById("toast");
+  var varPanel = document.getElementById("varPanel");
+  var varList = document.getElementById("varList");
+  var fracPanel = document.getElementById("fracPanel");
+  var fracInsertBtn = document.getElementById("fracInsertBtn");
+  var fracWhole = document.getElementById("fracWhole");
+  var fracNum = document.getElementById("fracNum");
+  var fracDen = document.getElementById("fracDen");
+  var VAR_NAMES = Engine.VARS || ["A", "B", "C", "D", "E", "F"];
 
   function load(key, fallback) {
     try {
@@ -38,10 +46,12 @@
     mem: load("calc.mem", null),
     slot: (function () { var s = parseInt(load("calc.slot", 1), 10); return (s >= 1 && s <= 9) ? s : 1; })(),
     history: load("calc.history", []) || [],
+    vars: load("calc.vars", null),
     percentMode: load("calc.percentMode", "percent") === "modulo" ? "modulo" : "percent",
     justEvaluated: false
   };
   if (!(state.ans === state.ans)) state.ans = 0;
+  if (!state.vars || typeof state.vars !== "object") state.vars = {};
   if (!state.mem || typeof state.mem !== "object") {
     state.mem = {};
     var oldMem = load("calc.memory", null);
@@ -80,7 +90,7 @@
   function preview() {
     if (state.expr.trim() === "") { state.result = "0"; state.value = 0; return; }
     try {
-      var v = Engine.evaluate(autoClose(state.expr), state.angle, state.percentMode);
+      var v = Engine.evaluate(autoClose(state.expr), state.angle, state.percentMode, state.vars);
       state.value = v;
       state.result = Engine.format(v);
     } catch (e) { /* mantener */ }
@@ -131,7 +141,7 @@
 
   function currentValue() {
     if (state.expr.trim() === "") return state.ans;
-    try { return Engine.evaluate(state.expr, state.angle, state.percentMode); } catch (e) { return state.ans; }
+    try { return Engine.evaluate(state.expr, state.angle, state.percentMode, state.vars); } catch (e) { return state.ans; }
   }
 
   function memHas(n) { return typeof state.mem[n] === "number" && isFinite(state.mem[n]); }
@@ -220,11 +230,80 @@
     historyEl.classList.toggle("open");
   }
 
+  function hasVar(n) { return typeof state.vars[n] === "number" && isFinite(state.vars[n]); }
+  function persistVars() { save("calc.vars", state.vars); }
+  function setVar(n, value) { state.vars[n] = isFinite(value) ? value : 0; persistVars(); renderVars(); }
+  function clearVars() { state.vars = {}; persistVars(); renderVars(); }
+  function toggleVars() { varPanel.classList.toggle("open"); }
+  function toggleFracPanel() { fracPanel.classList.toggle("open"); }
+
+  function renderVars() {
+    if (!varList) return;
+    varList.innerHTML = "";
+    VAR_NAMES.forEach(function (name) {
+      var li = document.createElement("li");
+      li.className = "history-item var-item";
+
+      var nm = document.createElement("button");
+      nm.type = "button";
+      nm.className = "v-name";
+      nm.textContent = name;
+      nm.title = "Insertar " + name + " en la expresión";
+      nm.setAttribute("aria-label", "Insertar variable " + name);
+      nm.addEventListener("click", function () { insert(name); });
+
+      var val = document.createElement("span");
+      val.className = "v-val";
+      val.textContent = hasVar(name) ? Engine.format(state.vars[name]) : "\u2014";
+
+      var sto = document.createElement("button");
+      sto.type = "button";
+      sto.className = "v-btn";
+      sto.textContent = "STO";
+      sto.title = "Guardar el valor actual en " + name;
+      sto.addEventListener("click", function () { setVar(name, currentValue()); });
+
+      var rcl = document.createElement("button");
+      rcl.type = "button";
+      rcl.className = "v-btn";
+      rcl.textContent = "RCL";
+      rcl.title = "Insertar el valor de " + name;
+      rcl.addEventListener("click", function () {
+        if (hasVar(name)) insert(Engine.format(state.vars[name]));
+        else showToast(name + " vacía");
+      });
+
+      li.appendChild(nm);
+      li.appendChild(val);
+      li.appendChild(sto);
+      li.appendChild(rcl);
+      varList.appendChild(li);
+    });
+  }
+
+  function insertFraction() {
+    var expr = Engine.fractionToExpr(fracWhole.value, fracNum.value, fracDen.value);
+    if (!expr) { showToast("Fracción no válida"); return; }
+    insertExpr(expr);
+    fracWhole.value = "";
+    fracNum.value = "";
+    fracDen.value = "";
+    fracPanel.classList.remove("open");
+  }
+
+  function inverse() {
+    var base = state.expr.trim() === "" ? Engine.format(state.ans) : state.expr;
+    state.expr = "1/(" + base + ")";
+    state.justEvaluated = false;
+    preview();
+    render();
+  }
+
   function equals() {
     if (state.expr.trim() === "") return;
     var closed = autoClose(state.expr);
     try {
-      var v = Engine.evaluate(closed, state.angle, state.percentMode);
+      var v = Engine.evaluate(closed, state.angle, state.percentMode, state.vars);
       state.expr = closed;
       state.value = v;
       state.ans = v;
@@ -337,6 +416,9 @@
     else if (action === "mminus") memSub();
     else if (action === "ms") memStore();
     else if (action === "hist") toggleHistory();
+    else if (action === "vartoggle") toggleVars();
+    else if (action === "fractoggle") toggleFracPanel();
+    else if (action === "inv") inverse();
   });
 
   themeBtn.addEventListener("click", toggleTheme);
@@ -348,6 +430,12 @@
   historyEl.addEventListener("click", function (ev) {
     if (ev.target.closest("[data-action='histclear']")) clearHistory();
   });
+
+  varPanel.addEventListener("click", function (ev) {
+    if (ev.target.closest("[data-action='varclear']")) clearVars();
+  });
+
+  fracInsertBtn.addEventListener("click", insertFraction);
 
   document.addEventListener("keydown", function (ev) {
     var key = ev.key;
@@ -372,6 +460,7 @@
   updateIndicators();
   fracBtn.classList.toggle("active", state.fracMode);
   renderHistory();
+  renderVars();
   render();
 
   if (window.navigator && "serviceWorker" in window.navigator) {

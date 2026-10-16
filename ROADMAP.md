@@ -70,17 +70,18 @@ Ordenadas por prioridad.
 4. ✅ **Copiar el resultado** al portapapeles (con aviso tipo *toast*).
 
 ### Media
-5. ◻ **Multi-memoria / variables**: ✅ **M1–M9** (ranura activa seleccionable en
-   la cabecera, persistencia por ranura). Pendiente: **variables** `A`–`F` y
-   `STO`/`RCL`.
+5. ✅ **Multi-memoria / variables**: **M1–M9** (ranura activa en la cabecera,
+   persistencia por ranura) y **variables A–F** con panel `Var`, `STO`/`RCL`
+   por variable y en la expresión (`A`–`F` mayúscula = variable; `e` = Euler).
 6. **Más funciones**: `sinh`, `cosh`, `tanh`, `x^(1/y)`, `gcd`, `lcm`,
    `mod`, `⌊x⌋`, redondeos.
-7. ◻ **Fracciones y decimales**: ✅ **salida** como fracción simplificada
-   (botón `a/b`, con verificación de exactitud para no inventar fracciones de
-   irracionales). Pendiente: entrada en fracción mixta y conversión inversa.
+7. ✅ **Fracciones y decimales**: salida como fracción simplificada (botón `a/b`,
+   con verificación de exactitud) y **entrada** con panel `Frac`
+   (entero + numerador/denominador). Pendiente: conversión inversa (decimal→fracción
+   como acción separada) y simplificación del histórico.
 8. **Conversión de bases**: decimal ⇄ bin ⇄ oct ⇄ hex.
 9. ✅ **Pruebas automatizadas** con `node:test` en `npm test`
-   (`test/engine.test.js` + `test/ui.smoke.test.js`, 14 pruebas).
+   (`test/engine.test.js` + `test/ui.smoke.test.js`, 19 pruebas).
 10. **Precisión configurable** (nº de decimales, notación científica forzada).
 11. **3 estados de tema**: claro / oscuro / automático (seguir sistema).
 

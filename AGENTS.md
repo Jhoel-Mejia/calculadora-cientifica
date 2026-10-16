@@ -15,6 +15,11 @@ HTML + CSS + JavaScript puro, sin dependencias ni build.
 - Regenerar iconos PWA: `node tools/gen-icons.js`
 - No hay lint configurado.
 
+## Convenciones del motor
+
+- Variables: `A`–`F` en **mayúscula**; `e` (minúscula) es el número de Euler y
+  `pi`/`π` la constante pi. `evaluate(src, angle, percentMode, vars)`.
+
 ## PWA
 
 - Al modificar `index.html`, `style.css`, `engine.js` o `script.js`, subir la
